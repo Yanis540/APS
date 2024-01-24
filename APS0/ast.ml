@@ -8,6 +8,14 @@
 (* ==  Arbre de syntaxe abstraite                                          == *)
 (* ========================================================================== *)
 
+(* type TypesPrimitive = Int | Bool
+type typz = Type TypesPrimitive |FunctionType types *  TypesPrimitive 
+and 
+  types = ASTType of typz | ASTTypes of typz * types
+	
+
+type def = 
+  ASTconst of string * typz * expr  *)
 
 type expr =
     ASTNum of int
@@ -16,7 +24,7 @@ type expr =
   | ASTif of expr * expr * expr
   | ASTand of expr * expr
   | ASTor of expr * expr
-  (* | ASTconst of string * CustomType * expr *)
+  (* | ASTconst of string * typz * expr *)
 
 type stat =
     ASTEcho of expr
@@ -24,9 +32,5 @@ type stat =
 type cmd =
     ASTStat of stat
 
-(* type TypesPrimitives = Int | Bool
 
-type CustomType = Type TypesPrimitives |FunctionType types *  TypesPrimitives 
-and 
-  types = ASTType of typ | ASTTypes of typ * typs
-	 *)
+
