@@ -20,6 +20,11 @@ let rec print_expr e =
         print_expr cns; 
         Printf.printf "ELSE \t"; 
         print_expr alt; 
+    | ASTand (l,r) ->
+        Printf.printf "And statement : ";
+        print_expr l; 
+        Printf.printf "AND \t"; 
+        print_expr r;
     | ASTApp(e, es) -> (
 	Printf.printf"app(";
 	print_expr e;

@@ -42,7 +42,14 @@ prog: LBRA cmds RBRA    { $2 }
 
 cmds:
   stat                  { [ASTStat $1] }
+  // | def SEMICOLON cmds
 ;
+
+
+// def :
+//   CONST ident type expr {ASTconst($2,$3,$4)}
+  
+// ; 
 
 stat:
   ECHO expr             { ASTEcho($2) }
@@ -52,6 +59,7 @@ expr:
   NUM                   { ASTNum($1) }
 | IDENT                 { ASTId($1) }
 | LPAR IF expr expr expr RPAR { ASTif($3,$4,$5) }
+| LPAR AND expr expr RPAR { ASTand($3,$4) }
 | LPAR expr exprs RPAR  { ASTApp($2, $3) }
 ;
 
@@ -63,5 +71,5 @@ exprs :
 // type :
 //   INT | BOOL | (types ARROW type )
 // types : 
-//   type | type * type
+//   type | type MUL type
 

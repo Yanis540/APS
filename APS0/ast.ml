@@ -14,6 +14,8 @@ type expr =
   | ASTId of string
   | ASTApp of expr * expr list
   | ASTif of expr * expr * expr
+  | ASTand of expr * expr
+  (* | ASTconst of string * CustomType * expr *)
 
 type stat =
     ASTEcho of expr
@@ -21,4 +23,9 @@ type stat =
 type cmd =
     ASTStat of stat
 
-	
+(* type TypesPrimitives = Int | Bool
+
+type CustomType = Type TypesPrimitives |FunctionType types *  TypesPrimitives 
+and 
+  types = ASTType of typ | ASTTypes of typ * typs
+	 *)
