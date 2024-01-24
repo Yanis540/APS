@@ -25,6 +25,11 @@ let rec print_expr e =
         print_expr l; 
         Printf.printf "AND \t"; 
         print_expr r;
+    | ASTor (l,r) ->
+        Printf.printf "OR statement : ";
+        print_expr l; 
+        Printf.printf "OR \t"; 
+        print_expr r;
     | ASTApp(e, es) -> (
 	Printf.printf"app(";
 	print_expr e;

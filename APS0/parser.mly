@@ -60,6 +60,7 @@ expr:
 | IDENT                 { ASTId($1) }
 | LPAR IF expr expr expr RPAR { ASTif($3,$4,$5) }
 | LPAR AND expr expr RPAR { ASTand($3,$4) }
+| LPAR OR expr expr RPAR { ASTor($3,$4) }
 | LPAR expr exprs RPAR  { ASTApp($2, $3) }
 ;
 

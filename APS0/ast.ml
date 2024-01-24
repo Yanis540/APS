@@ -15,6 +15,7 @@ type expr =
   | ASTApp of expr * expr list
   | ASTif of expr * expr * expr
   | ASTand of expr * expr
+  | ASTor of expr * expr
   (* | ASTconst of string * CustomType * expr *)
 
 type stat =
