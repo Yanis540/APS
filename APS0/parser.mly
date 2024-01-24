@@ -31,8 +31,10 @@ open Ast
 
 %type <Ast.expr> expr
 %type <Ast.expr list> exprs
-%type <Ast.cmd list> cmds
-%type <Ast.cmd list> prog
+%type <Ast.cmds> cmds
+%type <Ast.cmds> prog
+%type <Ast.typ> typ
+%type <Ast.tprim> tprim
 
 %start prog
 
@@ -41,15 +43,15 @@ prog: LBRA cmds RBRA    { $2 }
 ;
 
 cmds:
-  stat                  { [ASTStat $1] }
-  // | def SEMICOLON cmds
+  stat                  { ASTStat $1 }
+  | def SEMICOLON cmds {ASTdef($1,$3)}
 ;
 
 
-// def :
-//   CONST ident type expr {ASTconst($2,$3,$4)}
+def :
+  CONST IDENT typ expr {ASTconst($2,$3,$4)}
   
-// ; 
+; 
 
 stat:
   ECHO expr             { ASTEcho($2) }
@@ -69,8 +71,18 @@ exprs :
 | expr exprs { $1::$2 }
 ;
 
-// type :
-//   INT | BOOL | (types ARROW type )
-// types : 
-//   type | type MUL type
+// https://github.com/valeeraZ/Sorbonne_APS/blob/master/APS0/parser.mly
+tprim:
+  INT                       { Int }
+| BOOL                      { Bool }
+;
 
+typ:
+  tprim                     { Type($1) }
+| LPAR types ARROW typ RPAR { TypeFunc($2,$4) }
+;
+
+types:
+  typ                      { ASTType($1) }
+| typ MUL types           { ASTTypes($1, $3) }
+;

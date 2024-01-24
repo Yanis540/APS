@@ -63,49 +63,63 @@ let yytransl_block = [|
     0|]
 
 let yylhs = "\255\255\
-\004\000\003\000\005\000\001\000\001\000\001\000\001\000\001\000\
-\001\000\002\000\002\000\000\000"
+\004\000\003\000\003\000\008\000\007\000\001\000\001\000\001\000\
+\001\000\001\000\001\000\002\000\002\000\006\000\006\000\005\000\
+\005\000\009\000\009\000\000\000"
 
 let yylen = "\002\000\
-\003\000\001\000\002\000\001\000\001\000\006\000\005\000\005\000\
-\004\000\001\000\002\000\002\000"
+\003\000\001\000\003\000\004\000\002\000\001\000\001\000\006\000\
+\005\000\005\000\004\000\001\000\002\000\001\000\001\000\001\000\
+\005\000\001\000\003\000\002\000"
 
 let yydefred = "\000\000\
-\000\000\000\000\000\000\012\000\000\000\000\000\002\000\004\000\
-\005\000\000\000\003\000\001\000\000\000\000\000\000\000\000\000\
-\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\
-\011\000\009\000\000\000\007\000\008\000\006\000"
+\000\000\000\000\000\000\020\000\000\000\000\000\000\000\002\000\
+\000\000\006\000\007\000\000\000\005\000\000\000\001\000\000\000\
+\000\000\000\000\000\000\000\000\000\000\015\000\014\000\000\000\
+\016\000\003\000\000\000\000\000\000\000\000\000\000\000\000\000\
+\000\000\004\000\000\000\000\000\000\000\013\000\011\000\000\000\
+\000\000\000\000\009\000\010\000\019\000\000\000\008\000\017\000"
 
 let yydgoto = "\002\000\
-\020\000\021\000\006\000\004\000\007\000"
+\030\000\031\000\007\000\004\000\032\000\025\000\008\000\009\000\
+\033\000"
 
-let yysindex = "\003\000\
-\001\255\000\000\004\255\000\000\000\255\009\255\000\000\000\000\
-\000\000\017\255\000\000\000\000\000\255\000\255\000\255\000\255\
-\000\255\000\255\000\255\000\255\003\255\000\255\012\255\018\255\
-\000\000\000\000\019\255\000\000\000\000\000\000"
+let yysindex = "\009\000\
+\006\255\000\000\251\254\000\000\003\255\018\255\023\255\000\000\
+\004\255\000\000\000\000\015\255\000\000\000\255\000\000\251\254\
+\003\255\003\255\003\255\003\255\000\255\000\000\000\000\003\255\
+\000\000\000\000\003\255\003\255\003\255\003\255\027\255\016\255\
+\019\255\000\000\003\255\029\255\031\255\000\000\000\000\000\255\
+\000\255\032\255\000\000\000\000\000\000\033\255\000\000\000\000"
 
 let yyrindex = "\000\000\
 \000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\
 \000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\
-\000\000\000\000\000\000\020\255\000\000\000\000\000\000\000\000\
-\000\000\000\000\000\000\000\000\000\000\000\000"
+\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\
+\000\000\000\000\000\000\000\000\000\000\034\255\000\000\024\255\
+\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\
+\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000"
 
 let yygindex = "\000\000\
-\251\255\001\000\000\000\000\000\000\000"
+\251\255\010\000\025\000\000\000\243\255\000\000\000\000\000\000\
+\002\000"
 
-let yytablesize = 29
-let yytable = "\011\000\
-\008\000\009\000\010\000\001\000\016\000\003\000\026\000\017\000\
-\018\000\019\000\005\000\022\000\023\000\024\000\012\000\028\000\
-\027\000\008\000\009\000\010\000\025\000\029\000\030\000\010\000\
-\000\000\000\000\013\000\014\000\015\000"
+let yytablesize = 42
+let yytable = "\013\000\
+\024\000\005\000\021\000\010\000\011\000\012\000\020\000\022\000\
+\023\000\001\000\003\000\027\000\028\000\029\000\006\000\010\000\
+\011\000\012\000\034\000\014\000\016\000\035\000\036\000\037\000\
+\017\000\018\000\019\000\046\000\015\000\042\000\039\000\040\000\
+\043\000\041\000\044\000\047\000\048\000\012\000\018\000\038\000\
+\026\000\045\000"
 
 let yycheck = "\005\000\
-\001\001\002\001\003\001\001\000\010\000\005\001\004\001\013\000\
-\014\000\015\000\007\001\017\000\018\000\019\000\006\001\004\001\
-\022\000\001\001\002\001\003\001\020\000\004\001\004\001\004\001\
-\255\255\255\255\010\001\011\001\012\001"
+\014\000\007\001\003\001\001\001\002\001\003\001\012\000\008\001\
+\009\001\001\000\005\001\017\000\018\000\019\000\020\001\001\001\
+\002\001\003\001\024\000\002\001\017\001\027\000\028\000\029\000\
+\010\001\011\001\012\001\041\000\006\001\035\000\004\001\016\001\
+\004\001\015\001\004\001\004\001\004\001\004\001\015\001\030\000\
+\016\000\040\000"
 
 let yynames_const = "\
   LPAR\000\
@@ -136,88 +150,147 @@ let yynames_block = "\
 let yyact = [|
   (fun _ -> failwith "parser")
 ; (fun __caml_parser_env ->
-    let _2 = (Parsing.peek_val __caml_parser_env 1 : Ast.cmd list) in
+    let _2 = (Parsing.peek_val __caml_parser_env 1 : Ast.cmds) in
     Obj.repr(
-# 40 "parser.mly"
+# 42 "parser.mly"
                         ( _2 )
-# 144 "parser.ml"
-               : Ast.cmd list))
+# 158 "parser.ml"
+               : Ast.cmds))
 ; (fun __caml_parser_env ->
     let _1 = (Parsing.peek_val __caml_parser_env 0 : 'stat) in
     Obj.repr(
-# 44 "parser.mly"
-                        ( [ASTStat _1] )
-# 151 "parser.ml"
-               : Ast.cmd list))
+# 46 "parser.mly"
+                        ( ASTStat _1 )
+# 165 "parser.ml"
+               : Ast.cmds))
+; (fun __caml_parser_env ->
+    let _1 = (Parsing.peek_val __caml_parser_env 2 : 'def) in
+    let _3 = (Parsing.peek_val __caml_parser_env 0 : Ast.cmds) in
+    Obj.repr(
+# 47 "parser.mly"
+                       (ASTdef(_1,_3))
+# 173 "parser.ml"
+               : Ast.cmds))
+; (fun __caml_parser_env ->
+    let _2 = (Parsing.peek_val __caml_parser_env 2 : string) in
+    let _3 = (Parsing.peek_val __caml_parser_env 1 : Ast.typ) in
+    let _4 = (Parsing.peek_val __caml_parser_env 0 : Ast.expr) in
+    Obj.repr(
+# 52 "parser.mly"
+                       (ASTconst(_2,_3,_4))
+# 182 "parser.ml"
+               : 'def))
 ; (fun __caml_parser_env ->
     let _2 = (Parsing.peek_val __caml_parser_env 0 : Ast.expr) in
     Obj.repr(
-# 55 "parser.mly"
+# 57 "parser.mly"
                         ( ASTEcho(_2) )
-# 158 "parser.ml"
+# 189 "parser.ml"
                : 'stat))
 ; (fun __caml_parser_env ->
     let _1 = (Parsing.peek_val __caml_parser_env 0 : int) in
     Obj.repr(
-# 59 "parser.mly"
+# 61 "parser.mly"
                         ( ASTNum(_1) )
-# 165 "parser.ml"
+# 196 "parser.ml"
                : Ast.expr))
 ; (fun __caml_parser_env ->
     let _1 = (Parsing.peek_val __caml_parser_env 0 : string) in
     Obj.repr(
-# 60 "parser.mly"
+# 62 "parser.mly"
                         ( ASTId(_1) )
-# 172 "parser.ml"
+# 203 "parser.ml"
                : Ast.expr))
 ; (fun __caml_parser_env ->
     let _3 = (Parsing.peek_val __caml_parser_env 3 : Ast.expr) in
     let _4 = (Parsing.peek_val __caml_parser_env 2 : Ast.expr) in
     let _5 = (Parsing.peek_val __caml_parser_env 1 : Ast.expr) in
     Obj.repr(
-# 61 "parser.mly"
-                              ( ASTif(_3,_4,_5) )
-# 181 "parser.ml"
-               : Ast.expr))
-; (fun __caml_parser_env ->
-    let _3 = (Parsing.peek_val __caml_parser_env 2 : Ast.expr) in
-    let _4 = (Parsing.peek_val __caml_parser_env 1 : Ast.expr) in
-    Obj.repr(
-# 62 "parser.mly"
-                          ( ASTand(_3,_4) )
-# 189 "parser.ml"
-               : Ast.expr))
-; (fun __caml_parser_env ->
-    let _3 = (Parsing.peek_val __caml_parser_env 2 : Ast.expr) in
-    let _4 = (Parsing.peek_val __caml_parser_env 1 : Ast.expr) in
-    Obj.repr(
 # 63 "parser.mly"
+                              ( ASTif(_3,_4,_5) )
+# 212 "parser.ml"
+               : Ast.expr))
+; (fun __caml_parser_env ->
+    let _3 = (Parsing.peek_val __caml_parser_env 2 : Ast.expr) in
+    let _4 = (Parsing.peek_val __caml_parser_env 1 : Ast.expr) in
+    Obj.repr(
+# 64 "parser.mly"
+                          ( ASTand(_3,_4) )
+# 220 "parser.ml"
+               : Ast.expr))
+; (fun __caml_parser_env ->
+    let _3 = (Parsing.peek_val __caml_parser_env 2 : Ast.expr) in
+    let _4 = (Parsing.peek_val __caml_parser_env 1 : Ast.expr) in
+    Obj.repr(
+# 65 "parser.mly"
                          ( ASTor(_3,_4) )
-# 197 "parser.ml"
+# 228 "parser.ml"
                : Ast.expr))
 ; (fun __caml_parser_env ->
     let _2 = (Parsing.peek_val __caml_parser_env 2 : Ast.expr) in
     let _3 = (Parsing.peek_val __caml_parser_env 1 : Ast.expr list) in
     Obj.repr(
-# 64 "parser.mly"
+# 66 "parser.mly"
                         ( ASTApp(_2, _3) )
-# 205 "parser.ml"
+# 236 "parser.ml"
                : Ast.expr))
 ; (fun __caml_parser_env ->
     let _1 = (Parsing.peek_val __caml_parser_env 0 : Ast.expr) in
     Obj.repr(
-# 68 "parser.mly"
+# 70 "parser.mly"
              ( [_1] )
-# 212 "parser.ml"
+# 243 "parser.ml"
                : Ast.expr list))
 ; (fun __caml_parser_env ->
     let _1 = (Parsing.peek_val __caml_parser_env 1 : Ast.expr) in
     let _2 = (Parsing.peek_val __caml_parser_env 0 : Ast.expr list) in
     Obj.repr(
-# 69 "parser.mly"
+# 71 "parser.mly"
              ( _1::_2 )
-# 220 "parser.ml"
+# 251 "parser.ml"
                : Ast.expr list))
+; (fun __caml_parser_env ->
+    Obj.repr(
+# 76 "parser.mly"
+                            ( Int )
+# 257 "parser.ml"
+               : Ast.tprim))
+; (fun __caml_parser_env ->
+    Obj.repr(
+# 77 "parser.mly"
+                            ( Bool )
+# 263 "parser.ml"
+               : Ast.tprim))
+; (fun __caml_parser_env ->
+    let _1 = (Parsing.peek_val __caml_parser_env 0 : Ast.tprim) in
+    Obj.repr(
+# 81 "parser.mly"
+                            ( Type(_1) )
+# 270 "parser.ml"
+               : Ast.typ))
+; (fun __caml_parser_env ->
+    let _2 = (Parsing.peek_val __caml_parser_env 3 : 'types) in
+    let _4 = (Parsing.peek_val __caml_parser_env 1 : Ast.typ) in
+    Obj.repr(
+# 82 "parser.mly"
+                            ( TypeFunc(_2,_4) )
+# 278 "parser.ml"
+               : Ast.typ))
+; (fun __caml_parser_env ->
+    let _1 = (Parsing.peek_val __caml_parser_env 0 : Ast.typ) in
+    Obj.repr(
+# 86 "parser.mly"
+                           ( ASTType(_1) )
+# 285 "parser.ml"
+               : 'types))
+; (fun __caml_parser_env ->
+    let _1 = (Parsing.peek_val __caml_parser_env 2 : Ast.typ) in
+    let _3 = (Parsing.peek_val __caml_parser_env 0 : 'types) in
+    Obj.repr(
+# 87 "parser.mly"
+                          ( ASTTypes(_1, _3) )
+# 293 "parser.ml"
+               : 'types))
 (* Entry prog *)
 ; (fun __caml_parser_env -> raise (Parsing.YYexit (Parsing.peek_val __caml_parser_env 0)))
 |]
@@ -239,4 +312,4 @@ let yytables =
     Parsing.names_const=yynames_const;
     Parsing.names_block=yynames_block }
 let prog (lexfun : Lexing.lexbuf -> token) (lexbuf : Lexing.lexbuf) =
-   (Parsing.yyparse yytables 1 lexfun lexbuf : Ast.cmd list)
+   (Parsing.yyparse yytables 1 lexfun lexbuf : Ast.cmds)

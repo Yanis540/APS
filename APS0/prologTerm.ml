@@ -8,7 +8,33 @@
 (* ==  Génération de termes Prolog                                         == *)
 (* ========================================================================== *)
 open Ast
-  
+
+
+let primitive_to_string p =
+  match p with 
+  | Int -> "int"
+  | Bool -> "bool"
+
+
+
+let rec print_typ t = 
+  match t with 
+  | Type (p:tprim) ->  Printf.printf "%s" (primitive_to_string p) 
+  | TypeFunc (ts,t)-> 
+      Printf.printf "Func def ";
+      print_types ts ;  
+      Printf.printf "->" ;
+      print_typ t 
+
+and print_types ts = 
+  match ts with 
+  | ASTType (t:typ) -> print_typ t 
+  | ASTTypes (t,types) -> 
+    print_typ t; 
+    Printf.printf "* "  ; 
+    print_typ t
+
+
 let rec print_expr e =
   match e with
       ASTNum n -> Printf.printf"num(%d)" n
@@ -55,18 +81,26 @@ let print_stat s =
 	Printf.printf(")")
       )
 
-let print_cmd c =
+let print_def d = 
+  match d with 
+    ASTconst (idf,t,e)->
+      Printf.printf "Constant ";
+      Printf.printf "%s" idf;
+      print_typ t; 
+      print_expr e
+  
+    
+let rec print_cmd c =
   match c with
       ASTStat s -> print_stat s
+      | ASTdef (d , c) ->
+        print_def d; 
+        print_cmd c
 	
-let rec print_cmds cs =
-  match cs with
-      c::[] -> print_cmd c
-    | _ -> failwith "not yet implemented"
-	
+  
 let print_prog p =
   Printf.printf("prog([");
-  print_cmds p;
+  print_cmd p;
   Printf.printf("])")
 ;;
 	

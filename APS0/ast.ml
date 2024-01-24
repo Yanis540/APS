@@ -8,14 +8,19 @@
 (* ==  Arbre de syntaxe abstraite                                          == *)
 (* ========================================================================== *)
 
-(* type TypesPrimitive = Int | Bool
-type typz = Type TypesPrimitive |FunctionType types *  TypesPrimitive 
-and 
-  types = ASTType of typz | ASTTypes of typz * types
-	
 
-type def = 
-  ASTconst of string * typz * expr  *)
+(* 
+  https://github.com/valeeraZ/Sorbonne_APS/blob/master/APS0/parser.mly   
+*)
+
+
+
+type tprim = Int | Bool 
+
+type typ = Type of tprim | TypeFunc of types * typ (*ARROW*)
+and types = ASTType of typ | ASTTypes of typ * types (* multiple types a * b  *)
+
+
 
 type expr =
     ASTNum of int
@@ -29,8 +34,12 @@ type expr =
 type stat =
     ASTEcho of expr
       
-type cmd =
-    ASTStat of stat
+type def = 
+  ASTconst of string * typ * expr 
+type cmds =
+  ASTStat of stat
+  | ASTdef of def * cmds
+
 
 
 
