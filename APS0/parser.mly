@@ -18,6 +18,16 @@ open Ast
 %token LPAR RPAR 
 %token LBRA RBRA
 %token ECHO
+%token BOOL
+%token INT
+%token IF
+%token AND
+%token OR
+%token FUN REC
+%token FUN REC
+%token ARROW MUL SEMICOLON
+%token COLON COMMA
+%token CONST
 
 %type <Ast.expr> expr
 %type <Ast.expr list> exprs
@@ -41,6 +51,7 @@ stat:
 expr:
   NUM                   { ASTNum($1) }
 | IDENT                 { ASTId($1) }
+| LPAR IF expr expr expr RPAR { ASTif($3,$4,$5) }
 | LPAR expr exprs RPAR  { ASTApp($2, $3) }
 ;
 
@@ -48,4 +59,9 @@ exprs :
   expr       { [$1] }
 | expr exprs { $1::$2 }
 ;
+
+// type :
+//   INT | BOOL | (types ARROW type )
+// types : 
+//   type | type * type
 

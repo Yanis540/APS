@@ -13,6 +13,7 @@ type expr =
     ASTNum of int
   | ASTId of string
   | ASTApp of expr * expr list
+  | ASTif of expr * expr * expr
 
 type stat =
     ASTEcho of expr

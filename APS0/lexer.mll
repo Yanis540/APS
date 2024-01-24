@@ -19,7 +19,13 @@ rule token = parse
   | ']'              { RBRA }
   | '('              { LPAR }
   | ')'              { RPAR }
+  | "->"              { ARROW }
+  | "*"              { MUL }
+  | ";"              { SEMICOLON }
+  | ":"              { COLON }
+  | ","              { COMMA }
   | "ECHO"           { ECHO }    
+  | "CONST"           { CONST }    
   | "FUN"           { FUN }    
   | "REC"           { REC }    
   | "bool"           { BOOL }    

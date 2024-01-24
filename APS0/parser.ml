@@ -6,6 +6,19 @@ type token =
   | LBRA
   | RBRA
   | ECHO
+  | BOOL
+  | INT
+  | IF
+  | AND
+  | OR
+  | FUN
+  | REC
+  | ARROW
+  | MUL
+  | SEMICOLON
+  | COLON
+  | COMMA
+  | CONST
 
 open Parsing;;
 let _ = parse_error;;
@@ -22,13 +35,26 @@ let _ = parse_error;;
 
 open Ast
 
-# 26 "parser.ml"
+# 39 "parser.ml"
 let yytransl_const = [|
   259 (* LPAR *);
   260 (* RPAR *);
   261 (* LBRA *);
   262 (* RBRA *);
   263 (* ECHO *);
+  264 (* BOOL *);
+  265 (* INT *);
+  266 (* IF *);
+  267 (* AND *);
+  268 (* OR *);
+  269 (* FUN *);
+  270 (* REC *);
+  271 (* ARROW *);
+  272 (* MUL *);
+  273 (* SEMICOLON *);
+  274 (* COLON *);
+  275 (* COMMA *);
+  276 (* CONST *);
     0|]
 
 let yytransl_block = [|
@@ -37,42 +63,44 @@ let yytransl_block = [|
     0|]
 
 let yylhs = "\255\255\
-\004\000\003\000\005\000\001\000\001\000\001\000\002\000\002\000\
-\000\000"
+\004\000\003\000\005\000\001\000\001\000\001\000\001\000\002\000\
+\002\000\000\000"
 
 let yylen = "\002\000\
-\003\000\001\000\002\000\001\000\001\000\004\000\001\000\002\000\
-\002\000"
+\003\000\001\000\002\000\001\000\001\000\006\000\004\000\001\000\
+\002\000\002\000"
 
 let yydefred = "\000\000\
-\000\000\000\000\000\000\009\000\000\000\000\000\002\000\004\000\
-\005\000\000\000\003\000\001\000\000\000\000\000\000\000\008\000\
-\006\000"
+\000\000\000\000\000\000\010\000\000\000\000\000\002\000\004\000\
+\005\000\000\000\003\000\001\000\000\000\000\000\000\000\000\000\
+\000\000\000\000\009\000\007\000\000\000\006\000"
 
 let yydgoto = "\002\000\
-\014\000\015\000\006\000\004\000\007\000"
+\016\000\017\000\006\000\004\000\007\000"
 
-let yysindex = "\003\000\
-\001\255\000\000\002\255\000\000\000\255\004\255\000\000\000\000\
-\000\000\000\255\000\000\000\000\000\255\000\255\003\255\000\000\
-\000\000"
+let yysindex = "\005\000\
+\252\254\000\000\000\255\000\000\013\255\003\255\000\000\000\000\
+\000\000\001\255\000\000\000\000\013\255\013\255\013\255\013\255\
+\008\255\013\255\000\000\000\000\014\255\000\000"
 
 let yyrindex = "\000\000\
 \000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\
-\000\000\000\000\000\000\000\000\000\000\007\255\000\000\000\000\
-\000\000"
+\000\000\000\000\000\000\000\000\000\000\000\000\000\000\015\255\
+\000\000\000\000\000\000\000\000\000\000\000\000"
 
 let yygindex = "\000\000\
-\251\255\250\255\000\000\000\000\000\000"
+\251\255\001\000\000\000\000\000\000\000"
 
-let yytablesize = 11
+let yytablesize = 19
 let yytable = "\011\000\
-\008\000\009\000\010\000\001\000\013\000\003\000\017\000\016\000\
-\005\000\012\000\007\000"
+\003\000\008\000\009\000\010\000\014\000\001\000\005\000\015\000\
+\012\000\018\000\013\000\020\000\021\000\008\000\009\000\010\000\
+\019\000\022\000\008\000"
 
 let yycheck = "\005\000\
-\001\001\002\001\003\001\001\000\010\000\005\001\004\001\014\000\
-\007\001\006\001\004\001"
+\005\001\001\001\002\001\003\001\010\000\001\000\007\001\013\000\
+\006\001\015\000\010\001\004\001\018\000\001\001\002\001\003\001\
+\016\000\004\001\004\001"
 
 let yynames_const = "\
   LPAR\000\
@@ -80,6 +108,19 @@ let yynames_const = "\
   LBRA\000\
   RBRA\000\
   ECHO\000\
+  BOOL\000\
+  INT\000\
+  IF\000\
+  AND\000\
+  OR\000\
+  FUN\000\
+  REC\000\
+  ARROW\000\
+  MUL\000\
+  SEMICOLON\000\
+  COLON\000\
+  COMMA\000\
+  CONST\000\
   "
 
 let yynames_block = "\
@@ -92,60 +133,69 @@ let yyact = [|
 ; (fun __caml_parser_env ->
     let _2 = (Parsing.peek_val __caml_parser_env 1 : Ast.cmd list) in
     Obj.repr(
-# 30 "parser.mly"
+# 40 "parser.mly"
                         ( _2 )
-# 98 "parser.ml"
+# 139 "parser.ml"
                : Ast.cmd list))
 ; (fun __caml_parser_env ->
     let _1 = (Parsing.peek_val __caml_parser_env 0 : 'stat) in
     Obj.repr(
-# 34 "parser.mly"
+# 44 "parser.mly"
                         ( [ASTStat _1] )
-# 105 "parser.ml"
+# 146 "parser.ml"
                : Ast.cmd list))
 ; (fun __caml_parser_env ->
     let _2 = (Parsing.peek_val __caml_parser_env 0 : Ast.expr) in
     Obj.repr(
-# 38 "parser.mly"
+# 48 "parser.mly"
                         ( ASTEcho(_2) )
-# 112 "parser.ml"
+# 153 "parser.ml"
                : 'stat))
 ; (fun __caml_parser_env ->
     let _1 = (Parsing.peek_val __caml_parser_env 0 : int) in
     Obj.repr(
-# 42 "parser.mly"
+# 52 "parser.mly"
                         ( ASTNum(_1) )
-# 119 "parser.ml"
+# 160 "parser.ml"
                : Ast.expr))
 ; (fun __caml_parser_env ->
     let _1 = (Parsing.peek_val __caml_parser_env 0 : string) in
     Obj.repr(
-# 43 "parser.mly"
+# 53 "parser.mly"
                         ( ASTId(_1) )
-# 126 "parser.ml"
+# 167 "parser.ml"
+               : Ast.expr))
+; (fun __caml_parser_env ->
+    let _3 = (Parsing.peek_val __caml_parser_env 3 : Ast.expr) in
+    let _4 = (Parsing.peek_val __caml_parser_env 2 : Ast.expr) in
+    let _5 = (Parsing.peek_val __caml_parser_env 1 : Ast.expr) in
+    Obj.repr(
+# 54 "parser.mly"
+                              ( ASTif(_3,_4,_5) )
+# 176 "parser.ml"
                : Ast.expr))
 ; (fun __caml_parser_env ->
     let _2 = (Parsing.peek_val __caml_parser_env 2 : Ast.expr) in
     let _3 = (Parsing.peek_val __caml_parser_env 1 : Ast.expr list) in
     Obj.repr(
-# 44 "parser.mly"
+# 55 "parser.mly"
                         ( ASTApp(_2, _3) )
-# 134 "parser.ml"
+# 184 "parser.ml"
                : Ast.expr))
 ; (fun __caml_parser_env ->
     let _1 = (Parsing.peek_val __caml_parser_env 0 : Ast.expr) in
     Obj.repr(
-# 48 "parser.mly"
+# 59 "parser.mly"
              ( [_1] )
-# 141 "parser.ml"
+# 191 "parser.ml"
                : Ast.expr list))
 ; (fun __caml_parser_env ->
     let _1 = (Parsing.peek_val __caml_parser_env 1 : Ast.expr) in
     let _2 = (Parsing.peek_val __caml_parser_env 0 : Ast.expr list) in
     Obj.repr(
-# 49 "parser.mly"
+# 60 "parser.mly"
              ( _1::_2 )
-# 149 "parser.ml"
+# 199 "parser.ml"
                : Ast.expr list))
 (* Entry prog *)
 ; (fun __caml_parser_env -> raise (Parsing.YYexit (Parsing.peek_val __caml_parser_env 0)))

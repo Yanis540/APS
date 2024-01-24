@@ -13,6 +13,13 @@ let rec print_expr e =
   match e with
       ASTNum n -> Printf.printf"num(%d)" n
     | ASTId x -> Printf.printf"id(%s)" x
+    | ASTif (c,cns,alt) ->
+        Printf.printf "If \t"; 
+        print_expr c; 
+        Printf.printf "THEN  \t"; 
+        print_expr cns; 
+        Printf.printf "ELSE \t"; 
+        print_expr alt; 
     | ASTApp(e, es) -> (
 	Printf.printf"app(";
 	print_expr e;

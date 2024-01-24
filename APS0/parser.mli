@@ -6,6 +6,19 @@ type token =
   | LBRA
   | RBRA
   | ECHO
+  | BOOL
+  | INT
+  | IF
+  | AND
+  | OR
+  | FUN
+  | REC
+  | ARROW
+  | MUL
+  | SEMICOLON
+  | COLON
+  | COMMA
+  | CONST
 
 val prog :
   (Lexing.lexbuf  -> token) -> Lexing.lexbuf -> Ast.cmd list
