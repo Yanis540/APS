@@ -46,6 +46,7 @@ type stat =
 type def = 
   ASTconst of string * typ * expr 
   | ASTfunc of string * typ * args *expr
+  | ASTfuncRec of string * typ * args *expr
 
 
 type cmds =

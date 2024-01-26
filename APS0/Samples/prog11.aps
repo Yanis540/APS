@@ -1,0 +1,3 @@
+[
+    FUN REC yanis int [x:int] 1
+    ; ECHO 3  ]

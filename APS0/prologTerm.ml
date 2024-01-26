@@ -46,9 +46,13 @@ let print_arg a =
 
 let rec print_args (argz) = 
   match argz with 
-  |  ASTarg a -> print_arg a
+  |  ASTarg a -> 
+    Printf.printf "( ";
+    print_arg a;
+    Printf.printf " )"
+    
   |  ASTargs (a,argz') -> 
-      Printf.printf"(";
+      Printf.printf"( ";
       print_arg a;
       print_args argz';
       Printf.printf ")"
@@ -114,10 +118,23 @@ let print_def d =
       print_typ t; 
       print_expr e
   | ASTfunc (name,t,argz,e) -> 
-    Printf.printf "Function %s " name;      
-    print_typ t;       
-    print_args argz;       
+    Printf.printf "Function %s " name; 
+    Printf.printf "  : ";  
+    print_typ t;
+    Printf.printf "  ";        
+    print_args argz;      
+    Printf.printf "  ";        
     print_expr e 
+  | ASTfuncRec (name,t,argz,e) -> 
+    Printf.printf "Function %s " name; 
+    Printf.printf "  : ";  
+    print_typ t;
+    Printf.printf "  ";        
+    print_args argz;      
+    Printf.printf "  ";        
+    print_expr e 
+ 
+  
   
     
 let rec print_cmd c =

@@ -53,6 +53,7 @@ cmds:
 def :
   CONST IDENT typ expr {ASTconst($2,$3,$4)}
   | FUN IDENT  typ LBRA args RBRA expr {ASTfunc($2,$3,$5,$7)}
+  | FUN REC IDENT  typ LBRA args RBRA expr {ASTfuncRec($3,$4,$6,$8)}
   
 ; 
 
