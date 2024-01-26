@@ -35,6 +35,8 @@ open Ast
 %type <Ast.cmds> prog
 %type <Ast.typ> typ
 %type <Ast.tprim> tprim
+%type <Ast.arg> arg
+%type <Ast.args> args
 
 %start prog
 
@@ -50,6 +52,7 @@ cmds:
 
 def :
   CONST IDENT typ expr {ASTconst($2,$3,$4)}
+  | FUN IDENT  typ LBRA args RBRA expr {ASTfunc($2,$3,$5,$7)}
   
 ; 
 
@@ -85,4 +88,11 @@ typ:
 types:
   typ                      { ASTType($1) }
 | typ MUL types           { ASTTypes($1, $3) }
+;
+
+arg: IDENT COLON typ {Argument($1,$3)}
+; 
+args : 
+  arg {ASTarg($1)}
+| arg COMMA args {ASTargs($1,$3)}
 ;

@@ -9,6 +9,7 @@
 (* ========================================================================== *)
 open Ast
 
+(* ! Printing types *)
 
 let primitive_to_string p =
   match p with 
@@ -34,7 +35,27 @@ and print_types ts =
     Printf.printf "* "  ; 
     print_typ t
 
+(* ! Printing arguments *)
 
+let print_arg a = 
+  match a with 
+  | Argument (idf,t)->
+    Printf.printf "Argument %s :" idf ;  
+    print_typ t
+
+
+let rec print_args (argz) = 
+  match argz with 
+  |  ASTarg a -> print_arg a
+  |  ASTargs (a,argz') -> 
+      Printf.printf"(";
+      print_arg a;
+      print_args argz';
+      Printf.printf ")"
+  
+
+
+(* ! Expression  *)
 let rec print_expr e =
   match e with
       ASTNum n -> Printf.printf"num(%d)" n
@@ -73,6 +94,9 @@ and print_exprs es =
 	print_exprs es
       )
 
+
+(* ! Stat  *)
+
 let print_stat s =
   match s with
       ASTEcho e -> (
@@ -81,6 +105,7 @@ let print_stat s =
 	Printf.printf(")")
       )
 
+
 let print_def d = 
   match d with 
     ASTconst (idf,t,e)->
@@ -88,6 +113,11 @@ let print_def d =
       Printf.printf "%s" idf;
       print_typ t; 
       print_expr e
+  | ASTfunc (name,t,argz,e) -> 
+    Printf.printf "Function %s " name;      
+    print_typ t;       
+    print_args argz;       
+    print_expr e 
   
     
 let rec print_cmd c =

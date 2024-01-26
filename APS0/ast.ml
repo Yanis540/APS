@@ -31,11 +31,23 @@ type expr =
   | ASTor of expr * expr
   (* | ASTconst of string * typz * expr *)
 
+type arg = 
+  Argument of string * typ 
+
+
+type args = 
+  ASTarg of arg
+  |  ASTargs of arg * args
+
 type stat =
     ASTEcho of expr
       
+  
 type def = 
   ASTconst of string * typ * expr 
+  | ASTfunc of string * typ * args *expr
+
+
 type cmds =
   ASTStat of stat
   | ASTdef of def * cmds
