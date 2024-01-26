@@ -19,7 +19,13 @@ type tprim = Int | Bool
 
 type typ = Type of tprim | TypeFunc of types * typ (*ARROW*)
 and types = ASTType of typ | ASTTypes of typ * types (* multiple types a * b  *)
+type arg = 
+  Argument of string * typ 
 
+
+type args = 
+  ASTarg of arg
+  |  ASTargs of arg * args
 
 
 type expr =
@@ -29,15 +35,9 @@ type expr =
   | ASTif of expr * expr * expr
   | ASTand of expr * expr
   | ASTor of expr * expr
-  (* | ASTconst of string * typz * expr *)
-
-type arg = 
-  Argument of string * typ 
+  | ASTlambda of args * expr
 
 
-type args = 
-  ASTarg of arg
-  |  ASTargs of arg * args
 
 type stat =
     ASTEcho of expr

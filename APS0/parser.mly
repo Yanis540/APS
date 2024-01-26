@@ -67,6 +67,7 @@ expr:
 | LPAR IF expr expr expr RPAR { ASTif($3,$4,$5) }
 | LPAR AND expr expr RPAR { ASTand($3,$4) }
 | LPAR OR expr expr RPAR { ASTor($3,$4) }
+| LBRA args RBRA expr  { ASTlambda($2,$4) }
 | LPAR expr exprs RPAR  { ASTApp($2, $3) }
 ;
 
@@ -76,6 +77,8 @@ exprs :
 ;
 
 // https://github.com/valeeraZ/Sorbonne_APS/blob/master/APS0/parser.mly
+// : On a utilisé les types primitive ainisi que les types de ce repo 
+// ARGS on l'a fait nous même plus que ct assez simple 
 tprim:
   INT                       { Int }
 | BOOL                      { Bool }

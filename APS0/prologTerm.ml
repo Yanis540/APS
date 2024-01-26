@@ -82,12 +82,20 @@ let rec print_expr e =
         Printf.printf "OR \t"; 
         print_expr r;
     | ASTApp(e, es) -> (
-	Printf.printf"app(";
-	print_expr e;
-	Printf.printf",[";
-	print_exprs es;
-	Printf.printf"])"
+	      Printf.printf"app(";
+	      print_expr e;
+	      Printf.printf",[";
+	      print_exprs es;
+	      Printf.printf"])"
       )
+    | ASTlambda(argz, e) -> (
+        Printf.printf "Lambda"; 
+        Printf.printf "  : ";  
+        print_args argz;      
+        Printf.printf "  ";        
+        print_expr e 
+      )
+
 and print_exprs es =
   match es with
       [] -> ()
