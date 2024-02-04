@@ -429,7 +429,7 @@ and __ocaml_lex_token_rec lexbuf __ocaml_lex_state =
 
   | 6 ->
 # 23 "lexer.mll"
-                     ( MUL )
+                     ( STAR )
 # 434 "lexer.ml"
 
   | 7 ->

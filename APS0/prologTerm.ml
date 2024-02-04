@@ -22,17 +22,20 @@ let rec print_typ t =
   match t with 
   | Type (p:tprim) ->  Printf.printf "%s" (primitive_to_string p) 
   | TypeFunc (ts,t)-> 
-      Printf.printf "Func def ";
+      Printf.printf "typeFunc";
+      Printf.printf "(";
       print_types ts ;  
-      Printf.printf "->" ;
-      print_typ t 
+      Printf.printf ",";
+      print_typ t;
+      Printf.printf ")" 
+      (* (a->b) typeFunc *)
 
 and print_types ts = 
   match ts with 
   | ASTType (t:typ) -> print_typ t 
   | ASTTypes (t,types) ->   
     print_typ t; 
-    Printf.printf "* "  ; 
+    Printf.printf ","  ; 
     print_types types
 
 (* ! Printing arguments *)
@@ -40,22 +43,22 @@ and print_types ts =
 let print_arg a = 
   match a with 
   | Argument (idf,t)->
-    Printf.printf "Argument %s :" idf ;  
-    print_typ t
+    Printf.printf "(" ;  
+    Printf.printf "%s" idf ;  
+    Printf.printf ",";
+    print_typ t;
+    Printf.printf ")"
 
 
 let rec print_args (argz) = 
   match argz with 
   |  ASTarg a -> 
-    Printf.printf "( ";
-    print_arg a;
-    Printf.printf " )"
+    print_arg a
     
   |  ASTargs (a,argz') -> 
-      Printf.printf"( ";
       print_arg a;
-      print_args argz';
-      Printf.printf ")"
+      Printf.printf ",";
+      print_args argz'
   
 
 
@@ -65,22 +68,29 @@ let rec print_expr e =
       ASTNum n -> Printf.printf"num(%d)" n
     | ASTId x -> Printf.printf"id(%s)" x
     | ASTif (c,cns,alt) ->
-        Printf.printf "If \t"; 
+        Printf.printf "if"; 
+        Printf.printf "("; 
         print_expr c; 
-        Printf.printf "THEN  \t"; 
+        Printf.printf ","; 
         print_expr cns; 
-        Printf.printf "ELSE \t"; 
+        Printf.printf ","; 
         print_expr alt; 
+        Printf.printf ")"
+
     | ASTand (l,r) ->
-        Printf.printf "And statement : ";
+        Printf.printf "and";
+        Printf.printf "(";
         print_expr l; 
-        Printf.printf "AND \t"; 
+        Printf.printf ","; 
         print_expr r;
+        Printf.printf ")"
     | ASTor (l,r) ->
-        Printf.printf "OR statement : ";
+        Printf.printf "or";
+        Printf.printf "(";
         print_expr l; 
-        Printf.printf "OR \t"; 
+        Printf.printf ","; 
         print_expr r;
+        Printf.printf ")" 
     | ASTApp(e, es) -> (
 	      Printf.printf"app(";
 	      print_expr e;
@@ -89,11 +99,13 @@ let rec print_expr e =
 	      Printf.printf"])"
       )
     | ASTlambda(argz, e) -> (
-        Printf.printf "Lambda"; 
-        Printf.printf "  : ";  
+        Printf.printf "lambda"; 
+        Printf.printf "("; 
+        Printf.printf "[";  
         print_args argz;      
-        Printf.printf "  ";        
-        print_expr e 
+        Printf.printf "]";  
+        print_expr e ;
+        Printf.printf ")"  
       )
 
 and print_exprs es =
@@ -121,26 +133,37 @@ let print_stat s =
 let print_def d = 
   match d with 
     ASTconst (idf,t,e)->
-      Printf.printf "Constant ";
+      Printf.printf "constant";
+      Printf.printf "(";
       Printf.printf "%s" idf;
+      Printf.printf ",";
       print_typ t; 
-      print_expr e
+      Printf.printf ",";
+      print_expr e;
+      Printf.printf ")"
   | ASTfunc (name,t,argz,e) -> 
-    Printf.printf "Function %s " name; 
-    Printf.printf "  : ";  
+    Printf.printf "function"; 
+    Printf.printf "("; 
+    Printf.printf "%s" name; 
+    Printf.printf ",";  
     print_typ t;
-    Printf.printf "  ";        
+    Printf.printf "[";        
     print_args argz;      
-    Printf.printf "  ";        
-    print_expr e 
+    Printf.printf "]";        
+    Printf.printf ",";        
+    print_expr e;
+    Printf.printf ")"
   | ASTfuncRec (name,t,argz,e) -> 
-    Printf.printf "Function %s " name; 
-    Printf.printf "  : ";  
+    Printf.printf "functionRec"; 
+    Printf.printf "("; 
+    Printf.printf "%s" name; 
+    Printf.printf ",";  
     print_typ t;
-    Printf.printf "  ";        
+    Printf.printf "[";        
     print_args argz;      
-    Printf.printf "  ";        
-    print_expr e 
+    Printf.printf "]";        
+    print_expr e;
+    Printf.printf ")"
  
   
   
@@ -149,7 +172,11 @@ let rec print_cmd c =
   match c with
       ASTStat s -> print_stat s
       | ASTdef (d , c) ->
+        Printf.printf "declaration";
+        Printf.printf "(";
         print_def d; 
+        Printf.printf ")";
+        Printf.printf ",";
         print_cmd c
 	
   

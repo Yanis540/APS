@@ -14,7 +14,7 @@ type token =
   | FUN
   | REC
   | ARROW
-  | MUL
+  | STAR
   | SEMICOLON
   | COLON
   | COMMA

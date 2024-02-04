@@ -20,7 +20,7 @@ rule token = parse
   | '('              { LPAR }
   | ')'              { RPAR }
   | "->"              { ARROW }
-  | "*"              { MUL }
+  | "*"              { STAR }
   | ";"              { SEMICOLON }
   | ":"              { COLON }
   | ","              { COMMA }

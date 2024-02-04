@@ -25,7 +25,7 @@ open Ast
 %token OR
 %token FUN REC
 %token FUN REC
-%token ARROW MUL SEMICOLON
+%token ARROW STAR SEMICOLON
 %token COLON COMMA
 %token CONST
 
@@ -91,7 +91,7 @@ typ:
 
 types:
   typ                      { ASTType($1) }
-| typ MUL types           { ASTTypes($1, $3) }
+| typ STAR types           { ASTTypes($1, $3) }
 ;
 
 arg: IDENT COLON typ {Argument($1,$3)}

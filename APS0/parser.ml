@@ -14,7 +14,7 @@ type token =
   | FUN
   | REC
   | ARROW
-  | MUL
+  | STAR
   | SEMICOLON
   | COLON
   | COMMA
@@ -50,7 +50,7 @@ let yytransl_const = [|
   269 (* FUN *);
   270 (* REC *);
   271 (* ARROW *);
-  272 (* MUL *);
+  272 (* STAR *);
   273 (* SEMICOLON *);
   274 (* COLON *);
   275 (* COMMA *);
@@ -152,7 +152,7 @@ let yynames_const = "\
   FUN\000\
   REC\000\
   ARROW\000\
-  MUL\000\
+  STAR\000\
   SEMICOLON\000\
   COLON\000\
   COMMA\000\
@@ -333,7 +333,7 @@ let yyact = [|
     let _3 = (Parsing.peek_val __caml_parser_env 0 : 'types) in
     Obj.repr(
 # 94 "parser.mly"
-                          ( ASTTypes(_1, _3) )
+                           ( ASTTypes(_1, _3) )
 # 338 "parser.ml"
                : 'types))
 ; (fun __caml_parser_env ->
