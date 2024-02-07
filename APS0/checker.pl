@@ -23,7 +23,7 @@ check_args(G,[ARG|ARGS],[ARGTYPE|ARGSTYPE]) :-
 g0([
     (false, bool),
     (true, bool),
-    (not, typeFunc([bool],bool)),
+    (not, arrow([bool],bool)),
     (eq, typeFunc([int,int],bool)),
     (lt, typeFunc([int,int],bool)),
     (add, typeFunc([int,int],int)),
@@ -48,17 +48,32 @@ type_expr(G,if(E1,E2,E3),T) :-
     type_expr(G,E2,T),
     type_expr(G,E3,T).
 
-/* lambda : [ARGS] e  */
+/* lambda : [ARGS] e (abs) */
 type_expr(G,lambda(ARGS,E),T):- 
     append(ARGS,G,GU), 
     type_expr(GU,E,T).
-/*?? app : e e1 e2 e3 ... 
+/* app : e e1 e2 e3 ... 
   - vérifier que e est bien une fonction de type : (t1*t2*....*tn) -> T 
   - vérifier que : e1:t1 et e2:t2 ... en:fn 
-  */
+  e.g : g0(L),type_expr(L,app(id(add),[num(1),num(2)]),T).
+*/
 type_expr(G,app(E,ARGS),T):- 
     type_expr(G,E,typeFunc(ARGSTYPE,T)),
     check_args(G,ARGS,ARGSTYPE).
+
+
+/* and 
+    e.g : g0(L),type_expr(L,and(id(true),id(false)),T).
+*/
+type_expr(G,and(L,R),bool):-
+    type_expr(G,L,bool),
+    type_expr(G,R,bool).
+/* or 
+    e.g : g0(L),type_expr(L,or(id(true),id(false)),T).
+*/
+type_expr(G,or(L,R),bool):-
+    type_expr(G,L,bool),
+    type_expr(G,R,bool).
 
 /******************************* INSTRUCTIONS ********************************/
 
@@ -75,24 +90,27 @@ type_def(G,constant(id(X),T,E),[(X|T)|G]):-
    - évaluer le body ou l'expression relier à la fonction 
    - mettre à jours les types des arguments 
    - créer un nouvel environnement gamma' permettant d'enrichir le context gamma 
+    e.g : type_def([],function(id(yanis),T,[(x,int)],num(1)),G).
  */
-type_def(G,function(id(funcName),T,args,E),GU):-
-	append(ARGS,G,G_TEMP), 
+type_def(G,function(id(FUNC),T,ARGUMENTS,E),GU):-
+	append(ARGUMENTS,G,G_TEMP),
 	type_expr(G_TEMP,E,T),
-	get_type_args(ARGS,RES),
-	GU=[(funcName,typeFunc(RES,T))|G]. 
-/* funcRec : FUN <NAME> <>
+	get_type_args(ARGUMENTS,RES),
+	GU=[(FUNC,typeFunc(RES,T))|G]. 
+/* funcRec : FUNRec <NAME> <>
    - rajouter les arguments dans un env temporaire
+   - rajouter la définiton de la fonction elle même dans l'env temporaire
    - évaluer le body ou l'expression relier à la fonction 
    - mettre à jours les types des arguments 
    - créer un nouvel environnement gamma' permettant d'enrichir le context gamma 
+    e.g : type_def([],functionRec(id(yanis),T,[(n,int)],app(id(yanis),[id(n)])),G).
  */
-type_def(G,functionRec(id(funcName),args,T,E),GU):-
-	get_type_args(ARGS,RES),
-	append(ARGS,G,G_TEMP), 
-    G_TEMP_TEMP = [(ID,typeFunc(RES,T))|G_TEMP],
-	type_expr(G_TEMP_TEMP,BODY,T),
-	GU=[(funcName,typeFunc(RES,T))|G]. 
+type_def(G,functionRec(id(FUNC),T,ARGUMENTS,E),GU):-
+	get_type_args(ARGUMENTS,RES),
+	append(ARGUMENTS,G,G_TEMP), 
+    G_TEMP_TEMP = [(FUNC,typeFunc(RES,T))|G_TEMP],
+	type_expr(G_TEMP_TEMP,E,T),
+	GU=[(FUNC,typeFunc(RES,T))|G]. 
 
 /******************************* CMDS ********************************/
 /* defs */
