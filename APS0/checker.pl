@@ -113,7 +113,9 @@ type_def(G,functionRec(id(FUNC),T,ARGUMENTS,E),GU):-
 	GU=[(FUNC,typeFunc(RES,T))|G]. 
 
 /******************************* CMDS ********************************/
-/* defs */
+/* defs 
+    e.g : type_cmds([],[declaration(constant(id(yanis),int,num(1)))],G)
+*/
 type_cmds(G,[declaration(X)|Y],void) :-
 	type_def(G,X,G_TEMP),
 	type_cmds(G_TEMP,Y,void).
