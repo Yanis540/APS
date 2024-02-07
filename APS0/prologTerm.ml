@@ -24,11 +24,12 @@ let rec print_typ t =
   | TypeFunc (ts,t)-> 
       Printf.printf "typeFunc";
       Printf.printf "(";
+      Printf.printf "[";
       print_types ts ;  
+      Printf.printf "]";
       Printf.printf ",";
       print_typ t;
       Printf.printf ")" 
-      (* (a->b) typeFunc *)
 
 and print_types ts = 
   match ts with 

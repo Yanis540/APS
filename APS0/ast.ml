@@ -10,11 +10,8 @@
 
 
 (* 
-  https://github.com/valeeraZ/Sorbonne_APS/blob/master/APS0/parser.mly   
+  les typ et types : https://github.com/valeeraZ/Sorbonne_APS/blob/master/APS0/parser.mly   
 *)
-
-
-
 type tprim = Int | Bool 
 
 type typ = Type of tprim | TypeFunc of types * typ (*ARROW*)

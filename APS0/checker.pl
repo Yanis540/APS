@@ -23,13 +23,13 @@ check_args(G,[ARG|ARGS],[ARGTYPE|ARGSTYPE]) :-
 g0([
     (false, bool),
     (true, bool),
-    (not, arrow(bool,bool)),
-    (eq, arrow(star(int,int),bool)),
-    (lt, arrow(star(int,int),bool)),
-    (add, arrow(star(int,int),int)),
-    (sub, arrow(star(int,int),int)),
-    (mul, arrow(star(int,int),int)),
-    (div, arrow(star(int,int),int))
+    (not, typeFunc([bool],bool)),
+    (eq, typeFunc([int,int],bool)),
+    (lt, typeFunc([int,int],bool)),
+    (add, typeFunc([int,int],int)),
+    (sub, typeFunc([int,int],int)),
+    (mul, typeFunc([int,int],int)),
+    (div, typeFunc([int,int],int))
 ]).
 
 /******************************* EXPRESSIONS ********************************/
@@ -54,11 +54,11 @@ type_expr(G,lambda(ARGS,E),T):-
     type_expr(GU,E,T).
 /*?? app : e e1 e2 e3 ... 
   - vérifier que e est bien une fonction de type : (t1*t2*....*tn) -> T 
-  - vérifier que chaque argument faire référence à son type 
+  - vérifier que : e1:t1 et e2:t2 ... en:fn 
   */
-type_expr(G,app(id(func),args),T):- 
-    parcours(func,G,typeFunc(ARGSTYPE,TF)),
-    check_args(G,args,ARGSTYPE).
+type_expr(G,app(E,ARGS),T):- 
+    type_expr(G,E,typeFunc(ARGSTYPE,T)),
+    check_args(G,ARGS,ARGSTYPE).
 
 /******************************* INSTRUCTIONS ********************************/
 
@@ -108,7 +108,7 @@ type_cmds(G,[X|Y],void) :-
 
 
 /******************************* PROG ********************************/
-typeProg(G,prog(X),void) :- type_cmds(G,X,void).
+type_prog(G,prog(X),void) :- type_cmds(G,X,void).
 
 /* d:-a,f(X) veut dire : d est vrai ssi si a est vrai et f(X) est vrai*/   
 
