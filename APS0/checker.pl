@@ -13,10 +13,10 @@ get_type_args([],[]).
 get_type_args([(_,T)|ARGS],[T|RES]) :-
 	get_type_args(ARGS,RES).
 		
-check_args(_,[],[]).
-check_args(G,[ARG|ARGS],[ARGTYPE|ARGSTYPE]) :-
+verifier_arguments(_,[],[]).
+verifier_arguments(G,[ARG|ARGS],[ARGTYPE|ARGSTYPE]) :-
 	type_expr(G,ARG,ARGTYPE),
-	check_args(G,ARGS,ARGSTYPE).
+	verifier_arguments(G,ARGS,ARGSTYPE).
 
 /******************************* UTILS ********************************/
 /* g0 */
@@ -29,7 +29,8 @@ g0([
     (add, typeFunc([int,int],int)),
     (sub, typeFunc([int,int],int)),
     (mul, typeFunc([int,int],int)),
-    (div, typeFunc([int,int],int))
+    (div, typeFunc([int,int],int)), 
+    (x, int)
 ]).
 
 /******************************* EXPRESSIONS ********************************/
@@ -59,7 +60,7 @@ type_expr(G,lambda(ARGS,E),T):-
 */
 type_expr(G,app(E,ARGS),T):- 
     type_expr(G,E,typeFunc(ARGSTYPE,T)),
-    check_args(G,ARGS,ARGSTYPE).
+    verifier_arguments(G,ARGS,ARGSTYPE).
 
 
 /* and 
@@ -80,19 +81,19 @@ type_expr(G,or(L,R),bool):-
 
 /* echo */
 type_stat(G,echo(E),void) :-
-	type_expr(G,E,int).	
+	type_expr(G,E,int).
 /******************************* DEFINITIONS ********************************/
 /* const */
-type_def(G,constant(id(X),T,E),[(X|T)|G]):-
+type_def(G,constant(X,T,E),[(X,T)|G]):-
 	type_expr(G,E,T).	
 /* func : FUN <NAME> <>
    - rajouter les arguments dans un env temporaire
    - évaluer le body ou l'expression relier à la fonction 
    - mettre à jours les types des arguments 
    - créer un nouvel environnement gamma' permettant d'enrichir le context gamma 
-    e.g : type_def([],function(id(yanis),T,[(x,int)],num(1)),G).
+    e.g : type_def([],function(yanis,T,[(x,int)],num(1)),G).
  */
-type_def(G,function(id(FUNC),T,ARGUMENTS,E),GU):-
+type_def(G,function(FUNC,T,ARGUMENTS,E),GU):-
 	append(ARGUMENTS,G,G_TEMP),
 	type_expr(G_TEMP,E,T),
 	get_type_args(ARGUMENTS,RES),
@@ -103,9 +104,9 @@ type_def(G,function(id(FUNC),T,ARGUMENTS,E),GU):-
    - évaluer le body ou l'expression relier à la fonction 
    - mettre à jours les types des arguments 
    - créer un nouvel environnement gamma' permettant d'enrichir le context gamma 
-    e.g : type_def([],functionRec(id(yanis),T,[(n,int)],app(id(yanis),[id(n)])),G).
+    e.g : type_def([],functionRec(yanis,T,[(n,int)],app(yanis,[n])),G).
  */
-type_def(G,functionRec(id(FUNC),T,ARGUMENTS,E),GU):-
+type_def(G,functionRec(FUNC,T,ARGUMENTS,E),GU):-
 	get_type_args(ARGUMENTS,RES),
 	append(ARGUMENTS,G,G_TEMP), 
     G_TEMP_TEMP = [(FUNC,typeFunc(RES,T))|G_TEMP],
@@ -114,7 +115,8 @@ type_def(G,functionRec(id(FUNC),T,ARGUMENTS,E),GU):-
 
 /******************************* CMDS ********************************/
 /* defs 
-    e.g : type_cmds([],[declaration(constant(id(yanis),int,num(1)))],G)
+    e.g : type_cmds([],[declaration(constant(yanis,int,num(1)))],G)
+    e.g : type_cmds([],[declaration(constant(x,T,num(1))),echo(id(x))],G).
 */
 type_cmds(G,[declaration(X)|Y],void) :-
 	type_def(G,X,G_TEMP),
@@ -123,9 +125,8 @@ type_cmds(G,[declaration(X)|Y],void) :-
 /* end */
 type_cmds(_,[],void).
 type_cmds(G,[X|Y],void) :-
-	type_stat(G,X,void),
+	type_stat(G,X,void), 
 	type_cmds(G,Y,void).
-
 
 /******************************* PROG ********************************/
 type_prog(G,prog(X),void) :- type_cmds(G,X,void).
@@ -137,5 +138,5 @@ type_prog(G,prog(X),void) :- type_cmds(G,X,void).
 
 main_stdin :-
 	read(user_input,T),
-	type_prog([],T,R),
+	type_prog(g0,T,R),
 	print(R).
