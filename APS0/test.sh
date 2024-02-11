@@ -1,0 +1,1 @@
+./prologTerm ./Samples/prog9.aps  | swipl -s checker.pl -g  main_stdin 2>&1

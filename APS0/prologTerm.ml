@@ -148,6 +148,7 @@ let print_def d =
     Printf.printf "%s" name; 
     Printf.printf ",";  
     print_typ t;
+    Printf.printf ",";  
     Printf.printf "[";        
     print_args argz;      
     Printf.printf "]";        
@@ -160,9 +161,11 @@ let print_def d =
     Printf.printf "%s" name; 
     Printf.printf ",";  
     print_typ t;
+    Printf.printf ",";  
     Printf.printf "[";        
     print_args argz;      
     Printf.printf "]";        
+    Printf.printf ",";        
     print_expr e;
     Printf.printf ")"
  

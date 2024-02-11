@@ -29,8 +29,7 @@ g0([
     (add, typeFunc([int,int],int)),
     (sub, typeFunc([int,int],int)),
     (mul, typeFunc([int,int],int)),
-    (div, typeFunc([int,int],int)), 
-    (x, int)
+    (div, typeFunc([int,int],int))
 ]).
 
 /******************************* EXPRESSIONS ********************************/
