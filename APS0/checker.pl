@@ -103,12 +103,13 @@ type_def(G,function(FUNC,T,ARGUMENTS,E),GU):-
    - évaluer le body ou l'expression relier à la fonction 
    - mettre à jours les types des arguments 
    - créer un nouvel environnement gamma' permettant d'enrichir le context gamma 
-    e.g : type_def([],functionRec(yanis,T,[(n,int)],app(yanis,[n])),G).
+    e.g : type_def([],functionRec(yanis,T,[(n,int)],app(id(yanis),[id(n)])),G).
  */
 type_def(G,functionRec(FUNC,T,ARGUMENTS,E),GU):-
+
 	get_type_args(ARGUMENTS,RES),
 	append(ARGUMENTS,G,G_TEMP), 
-    G_TEMP_TEMP = [(FUNC,typeFunc(RES,T))|G_TEMP],
+    G_TEMP_TEMP =[(FUNC,typeFunc(RES,T))|G_TEMP]
 	type_expr(G_TEMP_TEMP,E,T),
 	GU=[(FUNC,typeFunc(RES,T))|G]. 
 

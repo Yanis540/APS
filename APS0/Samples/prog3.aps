@@ -1,1 +1,1 @@
-[ ECHO (add 42 (add x 42)) ]
+[ ECHO ((if true add sub) 1 2 ) ]
