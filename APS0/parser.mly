@@ -97,6 +97,6 @@ types:
 arg: IDENT COLON typ {Argument($1,$3)}
 ; 
 args : 
-  arg {ASTarg($1)}
-| arg COMMA args {ASTargs($1,$3)}
+  arg {[$1]}
+| arg COMMA args {$1::$3}
 ;

@@ -20,9 +20,7 @@ type arg =
   Argument of string * typ 
 
 
-type args = 
-  ASTarg of arg
-  |  ASTargs of arg * args
+type args = arg list
 
 
 type expr =
