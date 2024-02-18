@@ -53,10 +53,9 @@ let print_arg a =
 
 let rec print_args (argz) = 
   match argz with 
-  |  ASTarg a -> 
-    print_arg a
-    
-  |  ASTargs (a,argz') -> 
+  |  [] -> ()
+  |  [a] -> print_arg a
+  |  a::argz' -> 
       print_arg a;
       Printf.printf ",";
       print_args argz'
