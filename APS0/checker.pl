@@ -49,8 +49,9 @@ type_expr(G,if(E1,E2,E3),T) :-
     type_expr(G,E3,T).
 
 /* lambda : [ARGS] e (abs) */
-type_expr(G,lambda(ARGS,E),T):- 
+type_expr(G,lambda(ARGS,E),typeFunc(RES,T)):- 
     append(ARGS,G,GU), 
+    get_type_args(ARGS,RES),
     type_expr(GU,E,T).
 /* app : e e1 e2 e3 ... 
   - vérifier que e est bien une fonction de type : (t1*t2*....*tn) -> T 
@@ -109,7 +110,7 @@ type_def(G,functionRec(FUNC,T,ARGUMENTS,E),GU):-
 
 	get_type_args(ARGUMENTS,RES),
 	append(ARGUMENTS,G,G_TEMP), 
-    G_TEMP_TEMP =[(FUNC,typeFunc(RES,T))|G_TEMP]
+    G_TEMP_TEMP =[(FUNC,typeFunc(RES,T))|G_TEMP],
 	type_expr(G_TEMP_TEMP,E,T),
 	GU=[(FUNC,typeFunc(RES,T))|G]. 
 

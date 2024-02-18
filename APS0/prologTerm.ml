@@ -104,6 +104,7 @@ let rec print_expr e =
         Printf.printf "[";  
         print_args argz;      
         Printf.printf "]";  
+        Printf.printf ",";  
         print_expr e ;
         Printf.printf ")"  
       )
