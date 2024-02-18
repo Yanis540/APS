@@ -90,8 +90,8 @@ typ:
 ;
 
 types:
-  typ                      { ASTType($1) }
-| typ STAR types           { ASTTypes($1, $3) }
+  typ                      { [$1] }
+| typ STAR types           { $1::$3 }
 ;
 
 arg: IDENT COLON typ {Argument($1,$3)}

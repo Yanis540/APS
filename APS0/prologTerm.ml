@@ -33,11 +33,12 @@ let rec print_typ t =
 
 and print_types ts = 
   match ts with 
-  | ASTType (t:typ) -> print_typ t 
-  | ASTTypes (t,types) ->   
+  | [] -> () 
+  | [t] -> print_typ t
+  | t::ts' ->   
     print_typ t; 
     Printf.printf ","  ; 
-    print_types types
+    print_types ts'
 
 (* ! Printing arguments *)
 

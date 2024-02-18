@@ -325,7 +325,7 @@ let yyact = [|
     let _1 = (Parsing.peek_val __caml_parser_env 0 : Ast.typ) in
     Obj.repr(
 # 93 "parser.mly"
-                           ( ASTType(_1) )
+                           ( [_1] )
 # 330 "parser.ml"
                : 'types))
 ; (fun __caml_parser_env ->
@@ -333,7 +333,7 @@ let yyact = [|
     let _3 = (Parsing.peek_val __caml_parser_env 0 : 'types) in
     Obj.repr(
 # 94 "parser.mly"
-                           ( ASTTypes(_1, _3) )
+                           ( _1::_3 )
 # 338 "parser.ml"
                : 'types))
 ; (fun __caml_parser_env ->

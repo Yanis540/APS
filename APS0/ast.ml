@@ -15,7 +15,7 @@
 type tprim = Int | Bool 
 
 type typ = Type of tprim | TypeFunc of types * typ (*ARROW*)
-and types = ASTType of typ | ASTTypes of typ * types (* multiple types a * b  *)
+and types = typ list (* multiple types a * b  *)
 type arg = 
   Argument of string * typ 
 
