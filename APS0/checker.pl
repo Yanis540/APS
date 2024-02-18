@@ -23,7 +23,7 @@ verifier_arguments(G,[ARG|ARGS],[ARGTYPE|ARGSTYPE]) :-
 g0([
     (false, bool),
     (true, bool),
-    (not, arrow([bool],bool)),
+    (not, typeFunc([bool],bool)),
     (eq, typeFunc([int,int],bool)),
     (lt, typeFunc([int,int],bool)),
     (add, typeFunc([int,int],int)),

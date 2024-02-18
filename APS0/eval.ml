@@ -23,7 +23,7 @@ type prim =
 type environnement = binding list 
 and binding = Binding of  string * value
 and value = 
-  Int of int 
+  InZ of int 
   | InF of expr * string list * environnement 
   | InFR of  expr * string * string list * environnement
   | InP of prim
@@ -40,13 +40,13 @@ let rec get_ident_value_from_env (ident  : string) (env : environnement)=
 
 let get_int_value (v:value)=
   match v with 
-  | Int(n) -> n 
+  | InZ(n) -> n 
   | _ -> failwith "Not an integer value" 
 
 
 let get_bool_value (v:value)=
   match v with 
-  | (Int(0 as n)| Int(1 as n)) -> 
+  | (InZ(0 as n)| InZ(1 as n)) -> 
       n!=0
   | _ -> failwith "Not an boolean value" 
 
@@ -78,8 +78,8 @@ let add_variables_to_env (argz : string list) (values : value list) (env : envir
 (*! Basic environnement *)
 
 let env0 = [
-  Binding ("true" , Int(1));
-  Binding ("false" , Int(0));
+  Binding ("true" , InZ(1));
+  Binding ("false" , InZ(0));
   Binding ("add" , InP (Add));
   Binding ("sub" , InP (Sub));
   Binding ("eq" , InP (Eq));
@@ -91,18 +91,18 @@ let env0 = [
 
 let pi_unary p v1  =
   match p,v1 with 
-  | InP Not,(Int(0 as n)|Int(1 as n)) -> 
-    if(n==0) then Int(1) else Int(0)
+  | InP Not,(InZ(0 as n)|InZ(1 as n)) -> 
+    if(n==0) then InZ(1) else InZ(0)
   | _ -> failwith "No unary operation"
 
   
 let pi_binary p v1 v2    =
   match p with 
-  | InP Eq -> if get_int_value(v1) == get_int_value(v2) then Int(1) else Int(0)
-  | InP Lt -> if get_int_value(v1) < get_int_value(v2) then Int(1) else Int(0)
-  | InP Add -> Int(get_int_value(v1)+get_int_value(v2))
-  | InP Mul -> Int(get_int_value(v1)*get_int_value(v2))
-  | InP Div -> Int(get_int_value(v1)/get_int_value(v2))
+  | InP Eq -> if get_int_value(v1) == get_int_value(v2) then InZ(1) else InZ(0)
+  | InP Lt -> if get_int_value(v1) < get_int_value(v2) then InZ(1) else InZ(0)
+  | InP Add -> InZ(get_int_value(v1)+get_int_value(v2))
+  | InP Mul -> InZ(get_int_value(v1)*get_int_value(v2))
+  | InP Div -> InZ(get_int_value(v1)/get_int_value(v2))
   | _-> failwith "No such binary operation"
 
 
@@ -111,7 +111,7 @@ let pi_binary p v1 v2    =
 
 let rec eval_expr e env= 
   match e with 
-  | ASTNum(n) -> Int(n)
+  | ASTNum(n) -> InZ(n)
   | ASTId(n) -> get_ident_value_from_env (n) (env)
   | ASTif(cond,cons,alt) -> 
       if get_bool_value(eval_expr cond env ) == true then 
@@ -120,12 +120,12 @@ let rec eval_expr e env=
         eval_expr (alt) env 
   | ASTand(e1,e2) -> 
       if (get_bool_value(eval_expr e1 env) && get_bool_value(eval_expr e2 env)) == true 
-      then Int(1) 
-      else Int(0)
+      then InZ(1) 
+      else InZ(0)
   | ASTor(e1,e2) -> 
       if(get_bool_value(eval_expr e1 env) ||  get_bool_value(eval_expr e2 env))== true 
-      then Int(1) 
-      else Int(0)
+      then InZ(1) 
+      else InZ(0)
   | ASTlambda(argz,e)-> 
     let argz_string = get_arguments_in_string_list (argz) in 
     InF (e,argz_string,env)
@@ -134,7 +134,7 @@ let rec eval_expr e env=
     let ve:value = eval_expr expr env in 
     let v_i = eval_exprs exprs env  in 
     match ve with
-    | Int (n)-> failwith "Expected function but got integer" 
+    | InZ (n)-> failwith "Expected function but got integer" 
     | InF (body_function,argz_string,env_function)-> 
       (* e1 .. en sont déjà évalué (représenter par v_i) et on a juste à rajouter dans l'enviornnment vi:valeur(ei)*)
       (* rajouter les couples (var,value) dans l'environnement de la fonction et l'évaluer dans cette environnement *)
