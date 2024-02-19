@@ -139,5 +139,6 @@ type_prog(G,prog(X),void) :- type_cmds(G,X,void).
 
 main_stdin :-
 	read(user_input,T),
-	type_prog(g0,T,R),
+    g0(L),
+	type_prog(L,T,R),
 	print(R).
