@@ -197,6 +197,7 @@ let rec eval_cmd c env =
   | ASTdef (d , c) -> 
     let env' = eval_def (d) env in 
     eval_cmd c env'
+  
 
 let eval_prog p env0= 
   eval_cmd p env0
@@ -209,6 +210,7 @@ let ic = open_in fname in
     let lexbuf = Lexing.from_channel ic in
     let p = Parser.prog Lexer.token lexbuf in
       eval_prog p env0;
+      Printf.printf "eval\n"
   with Lexer.Eof ->
     exit 0
         
