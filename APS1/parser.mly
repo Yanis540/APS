@@ -75,6 +75,7 @@ stat:
   | SET IDENT expr{ASTset($2,$3)}
   | IF expr block block{ASTif($2,$3,$3)}
   | WHILE expr block{ASTwhile($2,$3)}
+  | CALL IDENT exprs {ASTcall($2,$3)}
 ;
 
 expr:

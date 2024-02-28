@@ -172,7 +172,7 @@ and eval_exprs es env =
   (* | [e]-> [eval_expr e env]   *)
   | e::es'-> (eval_expr e env)::eval_exprs es' env  
       
-
+(* retourne le output updated *)
 let eval_stat s env output= 
   match s with 
   | ASTEcho e -> 
@@ -184,6 +184,9 @@ let eval_stat s env output=
       (*! TODO *)
       output
   | ASTwhile (cond,b)-> 
+      (*! TODO *)
+      output
+  | ASTcall (name,es)-> 
       (*! TODO *)
       output
     

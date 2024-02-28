@@ -151,6 +151,15 @@ and print_stat s =
       Printf.printf ","; 
       print_block b; 
       Printf.printf ")"
+  | ASTcall (name,es) ->
+      Printf.printf "call"; 
+      Printf.printf "("; 
+      Printf.printf "id(%s)"name; 
+      Printf.printf ","; 
+      Printf.printf "["; 
+      print_exprs es; 
+      Printf.printf "]"; 
+      Printf.printf ")"
       
 and  print_def d = 
   match d with 

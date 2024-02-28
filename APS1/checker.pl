@@ -92,10 +92,14 @@ type_stat(G,if(E,B_CONS,B_ALT),void) :-
     type_expr(G,E,bool),
     type_block(G,B_CONS,void),
     type_block(G,B_ALT,void).
-/* IF */
+/* While */
 type_stat(G,while(C,B),void) :-
     type_expr(G,C,bool),
     type_block(G,B,void).
+/* Call */
+type_stat(G,call(X,ARGS),void) :-
+    type_expr(G,X,typeFunc(ARGSTYPE,void)),
+    verifier_arguments(G,ARGS,ARGSTYPE).
 /******************************* DEFINITIONS ********************************/
 /* const */
 type_def(G,constant(X,T,E),[(X,T)|G]):-

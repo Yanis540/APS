@@ -1,0 +1,7 @@
+[
+    PROC x [y:int] [
+        SET y (add y 1)
+
+    ]; 
+    CALL x 2
+]
