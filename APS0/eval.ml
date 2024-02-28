@@ -140,14 +140,14 @@ let rec eval_expr e env=
       (* rajouter les couples (var,value) dans l'environnement de la fonction et l'évaluer dans cette environnement *)
       let env_function' = add_variables_to_env (argz_string) (v_i) (env_function) in 
       eval_expr (body_function) (env_function')
-      | InFR (body_function,functionName,argz_string,env_function)-> 
-        (* rajouter les couples (var,value) dans l'environnement de la fonction et l'évaluer dans cette environnement *)
-        (* puis rajouter la définition de la fonction pour permettre les accès récusrif dans le body *)
-        let rec_func_def = InFR  (body_function,functionName,argz_string,env_function) in 
-        let argz_string_function_rec = functionName::argz_string in 
-        let v_i_function_rec = rec_func_def::v_i in 
-        let env_function' = add_variables_to_env (argz_string_function_rec) (v_i_function_rec) (env_function) in 
-        eval_expr (body_function) (env_function')
+    | InFR (body_function,functionName,argz_string,env_function)-> 
+      (* rajouter les couples (var,value) dans l'environnement de la fonction et l'évaluer dans cette environnement *)
+      (* puis rajouter la définition de la fonction pour permettre les accès récusrif dans le body *)
+      let rec_func_def = InFR  (body_function,functionName,argz_string,env_function) in 
+      let argz_string_function_rec = functionName::argz_string in 
+      let v_i_function_rec = rec_func_def::v_i in 
+      let env_function' = add_variables_to_env (argz_string_function_rec) (v_i_function_rec) (env_function) in 
+      eval_expr (body_function) (env_function')
         
     | InP _ -> 
       match List.length exprs with 

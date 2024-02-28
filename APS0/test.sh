@@ -21,9 +21,9 @@ do
                 # Exécuter la commande spécifiée
                 t_res=$(./prologTerm "$file" | swipl -s checker.pl -g  main_stdin 2>&1)
                 if [[ $t_res = *"void"* ]]; then 
-                    echo "$(basename "$file")  : Typed checked Correct"
+                    echo "$(basename "$file")  : Bien typé"
                 else 
-                    echo "$(basename "$file")  : Typed checked Incorrect"
+                    echo "$(basename "$file")  : Mal typé"
                 fi
                 res_eval=$(./eval "$file")
                 if [[ $res_eval = *"eval"* ]]; then 
