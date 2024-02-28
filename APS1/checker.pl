@@ -112,8 +112,22 @@ type_def(G,functionRec(FUNC,T,ARGUMENTS,E),GU):-
     G_TEMP_TEMP =[(FUNC,typeFunc(RES,T))|G_TEMP],
 	type_expr(G_TEMP_TEMP,E,T),
 	GU=[(FUNC,typeFunc(RES,T))|G]. 
-
+/* VAR : */
 type_def(G,var(X,T),[(X,T)|G]).
+
+/* Proc */
+type_def(G,proc(PROC,ARGUMENTS,B),GU):-
+    append(ARGUMENTS,G,G_TEMP),
+	type_block(G_TEMP,B,void),
+	get_type_args(ARGUMENTS,RES),
+	GU=[(PROC,typeFunc(RES,void))|G].
+/* PROC REC */ 
+type_def(G,procRec(PROC,ARGUMENTS,B),GU):-
+    get_type_args(ARGUMENTS,RES),
+	append(ARGUMENTS,G,G_TEMP), 
+    G_TEMP_TEMP =[(PROC,typeFunc(RES,T))|G_TEMP],
+	type_block(G_TEMP_TEMP,B,T),
+	GU=[(PROC,typeFunc(RES,T))|G]. 
 
 /******************************* CMDS ********************************/
 /* defs 

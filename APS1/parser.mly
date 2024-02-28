@@ -65,6 +65,8 @@ def :
   | FUN IDENT  typ LBRA args RBRA expr {ASTfunc($2,$3,$5,$7)}
   | FUN REC IDENT  typ LBRA args RBRA expr {ASTfuncRec($3,$4,$6,$8)}
   | VAR IDENT typ  {ASTvar($2,$3)}
+  | PROC IDENT LBRA args RBRA block {ASTproc($2,$4,$6)}
+  | PROC REC IDENT LBRA args RBRA block {ASTprocRec($3,$5,$7)}
   
 ; 
 

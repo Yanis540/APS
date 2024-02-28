@@ -41,8 +41,8 @@ and def =
   | ASTfunc of string * typ * args *expr
   | ASTfuncRec of string * typ * args *expr
   | ASTvar of string * typ 
-  (* | ASTProc of string * typ * args *block *)
-  
+  | ASTproc of string * args * block
+  | ASTprocRec of string * args * block
 
 and cmds =
   ASTStat of stat

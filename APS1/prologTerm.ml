@@ -132,7 +132,7 @@ let print_stat s =
       )
 
 
-let print_def d = 
+let rec print_def d = 
   match d with 
     ASTconst (idf,t,e)->
       Printf.printf "constant";
@@ -176,11 +176,36 @@ let print_def d =
     Printf.printf ",";  
     print_typ t;
     Printf.printf ")"
- 
-  
-  
-    
-let rec print_cmd c =
+  | ASTproc (name,argz,b) -> 
+      Printf.printf "proc"; 
+      Printf.printf "("; 
+      Printf.printf "%s" name; 
+      Printf.printf ",";  
+      Printf.printf "[";        
+      print_args argz;      
+      Printf.printf "]";        
+      Printf.printf ",";        
+      print_block b;
+      Printf.printf ")"
+  | ASTprocRec (name,argz,b) -> 
+      Printf.printf "procRec"; 
+      Printf.printf "("; 
+      Printf.printf "%s" name; 
+      Printf.printf ",";  
+      Printf.printf "[";        
+      print_args argz;      
+      Printf.printf "]";        
+      Printf.printf ",";        
+      print_block b;
+      Printf.printf ")"
+and print_block b = 
+  match b with 
+  | ASTblock cs -> 
+    Printf.printf"block"; 
+    Printf.printf"(["; 
+    print_cmd cs;
+    Printf.printf"])" 
+and print_cmd c =
   match c with
       ASTStat s -> print_stat s
       | ASTdef (d , c) ->
@@ -194,14 +219,9 @@ let rec print_cmd c =
         print_stat s; 
         Printf.printf ",";
         print_cmd c
-	
-let print_block b = 
-  match b with 
-  | ASTblock cs -> 
-    Printf.printf"block"; 
-    Printf.printf"(["; 
-    print_cmd cs;
-    Printf.printf"])" 
+
+            
+
   
 let print_prog p =
   Printf.printf("prog(");

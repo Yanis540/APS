@@ -1,0 +1,4 @@
+[
+    PROC REC x [y:int] [ECHO 1];
+    ECHO 1
+]
