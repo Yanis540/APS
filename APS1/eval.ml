@@ -189,9 +189,10 @@ let eval_def d env =
     let v = InFR ( e, functionName,argz_string, env) in
     let bind = Binding(functionName,v) in 
     bind::env
-  | ASTvar(name,t)-> 
-    let bind = Binding(name,None) in 
-    bind::env
+  (*!  ces déclarations sont fausses pour l'instant *)
+  | ASTvar(name,t)-> env
+  | ASTproc(name,argz,b)-> env
+  | ASTprocRec(name,argz,b)-> env
 
 
 let rec eval_cmd c env = 
