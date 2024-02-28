@@ -1,0 +1,1 @@
+[ CONST x (int->int) [x:int] x ; ECHO (x 1)]

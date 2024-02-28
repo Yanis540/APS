@@ -1,0 +1,1 @@
+[ CONST x int 42 ; ECHO (add x 42) ]

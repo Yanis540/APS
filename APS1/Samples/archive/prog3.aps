@@ -1,0 +1,1 @@
+[ ECHO ((if true add sub) 1 2 ) ]
