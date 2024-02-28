@@ -40,7 +40,9 @@ and def =
   ASTconst of string * typ * expr 
   | ASTfunc of string * typ * args *expr
   | ASTfuncRec of string * typ * args *expr
-
+  | ASTvar of string * typ 
+  (* | ASTProc of string * typ * args *block *)
+  
 
 and cmds =
   ASTStat of stat

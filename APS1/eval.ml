@@ -189,6 +189,9 @@ let eval_def d env =
     let v = InFR ( e, functionName,argz_string, env) in
     let bind = Binding(functionName,v) in 
     bind::env
+  | ASTvar(name,t)-> 
+    let bind = Binding(name,None) in 
+    bind::env
 
 
 let rec eval_cmd c env = 

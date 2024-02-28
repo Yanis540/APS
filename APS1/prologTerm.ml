@@ -169,6 +169,13 @@ let print_def d =
     Printf.printf ",";        
     print_expr e;
     Printf.printf ")"
+  | ASTvar (name,t) -> 
+    Printf.printf "var"; 
+    Printf.printf "("; 
+    Printf.printf "%s" name; 
+    Printf.printf ",";  
+    print_typ t;
+    Printf.printf ")"
  
   
   

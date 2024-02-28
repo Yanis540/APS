@@ -107,12 +107,13 @@ type_def(G,function(FUNC,T,ARGUMENTS,E),GU):-
     e.g : type_def([],functionRec(yanis,T,[(n,int)],app(id(yanis),[id(n)])),G).
  */
 type_def(G,functionRec(FUNC,T,ARGUMENTS,E),GU):-
-
 	get_type_args(ARGUMENTS,RES),
 	append(ARGUMENTS,G,G_TEMP), 
     G_TEMP_TEMP =[(FUNC,typeFunc(RES,T))|G_TEMP],
 	type_expr(G_TEMP_TEMP,E,T),
 	GU=[(FUNC,typeFunc(RES,T))|G]. 
+
+type_def(G,var(X,T),[(X,T)|G]).
 
 /******************************* CMDS ********************************/
 /* defs 
