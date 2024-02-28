@@ -125,11 +125,17 @@ and print_exprs es =
 
 let print_stat s =
   match s with
-      ASTEcho e -> (
-        Printf.printf("echo(");
-        print_expr(e);
-        Printf.printf(")")
-      )
+    ASTEcho e -> 
+      Printf.printf("echo(");
+      print_expr(e);
+      Printf.printf(")")
+  | ASTset (var,e)-> 
+      Printf.printf("set(");
+      Printf.printf"id(%s)" var; 
+      Printf.printf",";
+      print_expr e;  
+      Printf.printf")"
+      
 
 
 let rec print_def d = 

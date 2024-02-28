@@ -34,6 +34,7 @@ and expr =
 
 and stat =
     ASTEcho of expr
+    | ASTset of string * expr
       
   
 and def = 

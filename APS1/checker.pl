@@ -82,6 +82,9 @@ type_expr(G,or(L,R),bool):-
 /* echo */
 type_stat(G,echo(E),void) :-
 	type_expr(G,E,int).
+type_stat(G,set(id(VAR),E),void) :-
+    type_expr(G,id(VAR),T),
+    type_expr(G,E,T).
 /******************************* DEFINITIONS ********************************/
 /* const */
 type_def(G,constant(X,T,E),[(X,T)|G]):-

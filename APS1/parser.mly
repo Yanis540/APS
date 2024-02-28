@@ -72,6 +72,7 @@ def :
 
 stat:
   ECHO expr             { ASTEcho($2) }
+  | SET IDENT expr{ASTset($2,$3)}
 ;
 
 expr:
