@@ -177,6 +177,9 @@ let eval_stat s env output=
   match s with 
   | ASTEcho e -> 
       (eval_expr e env)::output
+  | ASTset (var,e)-> 
+      (*! TODO *)
+      output
     
 
 

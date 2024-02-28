@@ -82,9 +82,16 @@ type_expr(G,or(L,R),bool):-
 /* echo */
 type_stat(G,echo(E),void) :-
 	type_expr(G,E,int).
+/* SET */
 type_stat(G,set(id(VAR),E),void) :-
+    /*chercher le type de VAR dans l'environnement puis vérifier */
     type_expr(G,id(VAR),T),
     type_expr(G,E,T).
+/* SET */
+type_stat(G,if(E1,E2,E3),void) :-
+    type_expr(G,E1,bool),
+    type_block(G,E2,void),
+    type_block(G,E3,void).
 /******************************* DEFINITIONS ********************************/
 /* const */
 type_def(G,constant(X,T,E),[(X,T)|G]):-
@@ -150,8 +157,8 @@ type_cmds(G,[X|Y],void) :-
 
 /******************************* BLOCK ********************************/
 
-type_block(G,block(B),T):-
-    type_cmds(G,B,T).
+type_block(G,block(B),void):-
+    type_cmds(G,B,void).
 
 /******************************* PROG ********************************/
 type_prog(G,prog(X),void) :- type_block(G,X,void).

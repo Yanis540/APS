@@ -123,7 +123,7 @@ and print_exprs es =
 
 (* ! Stat  *)
 
-let print_stat s =
+and print_stat s =
   match s with
     ASTEcho e -> 
       Printf.printf("echo(");
@@ -135,10 +135,17 @@ let print_stat s =
       Printf.printf",";
       print_expr e;  
       Printf.printf")"
+  | ASTif (c,cns,alt) ->
+      Printf.printf "if"; 
+      Printf.printf "("; 
+      print_expr c; 
+      Printf.printf ","; 
+      print_block cns; 
+      Printf.printf ","; 
+      print_block alt; 
+      Printf.printf ")"
       
-
-
-let rec print_def d = 
+and  print_def d = 
   match d with 
     ASTconst (idf,t,e)->
       Printf.printf "constant";
