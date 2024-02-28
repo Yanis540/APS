@@ -36,6 +36,7 @@ and stat =
     ASTEcho of expr
     | ASTset of string * expr
     | ASTif of expr * block * block
+    | ASTwhile of expr * block
       
   
 and def = 

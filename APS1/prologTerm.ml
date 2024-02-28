@@ -144,6 +144,13 @@ and print_stat s =
       Printf.printf ","; 
       print_block alt; 
       Printf.printf ")"
+  | ASTwhile (c,b) ->
+      Printf.printf "while"; 
+      Printf.printf "("; 
+      print_expr c; 
+      Printf.printf ","; 
+      print_block b; 
+      Printf.printf ")"
       
 and  print_def d = 
   match d with 

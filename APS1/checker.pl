@@ -87,11 +87,15 @@ type_stat(G,set(id(VAR),E),void) :-
     /*chercher le type de VAR dans l'environnement puis vérifier */
     type_expr(G,id(VAR),T),
     type_expr(G,E,T).
-/* SET */
-type_stat(G,if(E1,E2,E3),void) :-
-    type_expr(G,E1,bool),
-    type_block(G,E2,void),
-    type_block(G,E3,void).
+/* IF */
+type_stat(G,if(E,B_CONS,B_ALT),void) :-
+    type_expr(G,E,bool),
+    type_block(G,B_CONS,void),
+    type_block(G,B_ALT,void).
+/* IF */
+type_stat(G,while(C,B),void) :-
+    type_expr(G,C,bool),
+    type_block(G,B,void).
 /******************************* DEFINITIONS ********************************/
 /* const */
 type_def(G,constant(X,T,E),[(X,T)|G]):-

@@ -180,6 +180,12 @@ let eval_stat s env output=
   | ASTset (var,e)-> 
       (*! TODO *)
       output
+  | ASTif (cond,b_cons,b_alt)-> 
+      (*! TODO *)
+      output
+  | ASTwhile (cond,b)-> 
+      (*! TODO *)
+      output
     
 
 
