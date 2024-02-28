@@ -14,7 +14,7 @@
 
 }
 rule token = parse
-    [' ' '\t' '\n']       { token lexbuf }     (* skip blanks *)
+    [' ' '\t' '\n' '\r']       { token lexbuf }     (* skip blanks *)
   | '['              { LBRA }
   | ']'              { RBRA }
   | '('              { LPAR }
