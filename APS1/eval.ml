@@ -28,6 +28,13 @@ and value =
   | InFR of  expr * string * string list * environnement
   | InP of prim
 
+
+(* Merci Louic pour la remarque :))) *)
+let print_value value =
+  match value with
+    InZ(n) -> Printf.printf "%d\n" n
+  | _ -> failwith "Can't print non integer type"
+
 (*! Getters for env  *)
 
 let rec get_ident_value_from_env (ident  : string) (env : environnement)= 
@@ -166,10 +173,11 @@ and eval_exprs es env =
   | e::es'-> (eval_expr e env)::eval_exprs es' env  
       
 
-let eval_stat s env = 
+let eval_stat s env output= 
   match s with 
   | ASTEcho e -> 
-    get_int_value(eval_expr e env)
+      (eval_expr e env)::output
+    
 
 
 
@@ -178,7 +186,7 @@ let eval_def d env =
   | ASTconst(idf,t,e)-> 
     let v = eval_expr e env in 
     let bind = Binding (idf,v) in 
-    bind:: env
+    bind::env
   | ASTfunc(functionName,t,argz,e)-> 
     let argz_string = get_arguments_in_string_list (argz) in 
     let v = InF (e, argz_string ,env) in 
@@ -189,30 +197,33 @@ let eval_def d env =
     let v = InFR ( e, functionName,argz_string, env) in
     let bind = Binding(functionName,v) in 
     bind::env
-  (*!  ces déclarations sont fausses pour l'instant *)
+  (*! TODO  *)
   | ASTvar(name,t)-> env
   | ASTproc(name,argz,b)-> env
   | ASTprocRec(name,argz,b)-> env
 
 
-let rec eval_cmd c env = 
+let rec eval_cmd c env output = 
   match c with 
-  | ASTStat s -> eval_stat s env
+  | ASTStat s -> eval_stat s env output
   | ASTdef (d , c) -> 
     let env' = eval_def (d) env in 
-    eval_cmd c env'
+    eval_cmd c env' output
   | ASTstatCmds (s , c) -> 
-    let _ = eval_stat s env in 
-    let env_cmd = eval_cmd c env in 
-    env_cmd
+    let output' = eval_stat s env output in 
+    let output'' = eval_cmd c env output' in 
+    output''
   
-let eval_block b env = 
+let eval_block b env output = 
   match b with 
-  | ASTblock cs -> eval_cmd cs env 
+  | ASTblock cs -> eval_cmd cs env output
+  
 
+let rec print_output output =
+  List.iter (function x -> print_value x) (List.rev output) 
 
 let eval_prog p env0= 
-  eval_block p env0
+  print_output (eval_block p env0 [])
 ;;
 
 

@@ -28,6 +28,12 @@ and value =
   | InFR of  expr * string * string list * environnement
   | InP of prim
 
+(* Merci Louic pour la remarque :))) *)
+let print_value value =
+  match value with
+    InZ(n) -> Printf.printf "%d\n" n
+  | _ -> failwith "Can't print non integer type"
+
 (*! Getters for env  *)
 
 let rec get_ident_value_from_env (ident  : string) (env : environnement)= 
@@ -166,10 +172,11 @@ and eval_exprs es env =
   | e::es'-> (eval_expr e env)::eval_exprs es' env  
       
 
-let eval_stat s env = 
+let eval_stat s env output= 
   match s with 
   | ASTEcho e -> 
-    get_int_value(eval_expr e env)
+      (eval_expr e env)::output
+    
 
 
 
@@ -191,16 +198,19 @@ let eval_def d env =
     bind::env
 
 
-let rec eval_cmd c env = 
+let rec eval_cmd c env output= 
   match c with 
-  | ASTStat s -> eval_stat s env 
+  | ASTStat s -> eval_stat s env output
   | ASTdef (d , c) -> 
     let env' = eval_def (d) env in 
-    eval_cmd c env'
+    eval_cmd c env' output
   
+let rec print_output output =
+  List.iter (function x -> print_value x) (List.rev output) 
+
 
 let eval_prog p env0= 
-  eval_cmd p env0
+  print_output (eval_cmd p env0 [])
 ;;
 
 
