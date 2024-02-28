@@ -14,7 +14,7 @@
 
 }
 rule token = parse
-    [' ' '\t' '\n']       { token lexbuf }     (* skip blanks *)
+    [' ' '\t' '\n' '\r']       { token lexbuf }     (* skip blanks *)
   | '['              { LBRA }
   | ']'              { RBRA }
   | '('              { LPAR }
@@ -33,6 +33,11 @@ rule token = parse
   | "if"           { IF }    
   | "and"           { AND }    
   | "or"           { OR }    
+  | "VAR"           { VAR }    
+  | "PROC"           { PROC }    
+  | "SET"           { SET }    
+  | "WHILE"           { WHILE }    
+  | "CALL"           { CALL }    
   | ['0'-'9']+('.'['0'-'9'])? as lxm { NUM(int_of_string lxm) }
   | ['a'-'z']['a'-'z''A'-'Z''0'-'9']* as lxm { IDENT(lxm) }
   | eof              { raise Eof }

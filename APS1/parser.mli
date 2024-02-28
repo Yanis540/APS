@@ -19,6 +19,11 @@ type token =
   | COLON
   | COMMA
   | CONST
+  | VAR
+  | PROC
+  | SET
+  | WHILE
+  | CALL
 
 val prog :
-  (Lexing.lexbuf  -> token) -> Lexing.lexbuf -> Ast.cmds
+  (Lexing.lexbuf  -> token) -> Lexing.lexbuf -> Ast.block

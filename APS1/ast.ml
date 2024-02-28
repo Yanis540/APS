@@ -16,14 +16,12 @@ type tprim = Int | Bool
 
 type typ = Type of tprim | TypeFunc of types * typ (*ARROW*)
 and types = typ list (* multiple types a * b  *)
-type arg = 
+and arg = 
   Argument of string * typ 
+and args = arg list
 
 
-type args = arg list
-
-
-type expr =
+and expr =
     ASTNum of int
   | ASTId of string
   | ASTApp of expr * expr list
@@ -34,20 +32,22 @@ type expr =
 
 
 
-type stat =
+and stat =
     ASTEcho of expr
       
   
-type def = 
+and def = 
   ASTconst of string * typ * expr 
   | ASTfunc of string * typ * args *expr
   | ASTfuncRec of string * typ * args *expr
 
 
-type cmds =
+and cmds =
   ASTStat of stat
   | ASTdef of def * cmds
-
+  | ASTstatCmds of stat * cmds
+and block = 
+  ASTblock of cmds 
 
 
 

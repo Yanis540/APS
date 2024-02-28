@@ -28,11 +28,17 @@ open Ast
 %token ARROW STAR SEMICOLON
 %token COLON COMMA
 %token CONST
+%token VAR
+%token PROC
+%token SET
+%token WHILE
+%token CALL
 
 %type <Ast.expr> expr
 %type <Ast.expr list> exprs
 %type <Ast.cmds> cmds
-%type <Ast.cmds> prog
+%type <Ast.block> block
+%type <Ast.block> prog
 %type <Ast.typ> typ
 %type <Ast.tprim> tprim
 %type <Ast.arg> arg
@@ -41,12 +47,16 @@ open Ast
 %start prog
 
 %%
-prog: LBRA cmds RBRA    { $2 }
+
+prog : block { $1 };
+
+block: LBRA cmds RBRA    { ASTblock $2 }
 ;
 
 cmds:
   stat                  { ASTStat $1 }
   | def SEMICOLON cmds {ASTdef($1,$3)}
+  | stat SEMICOLON cmds {ASTstatCmds($1,$3)}
 ;
 
 

@@ -126,9 +126,9 @@ and print_exprs es =
 let print_stat s =
   match s with
       ASTEcho e -> (
-	Printf.printf("echo(");
-	print_expr(e);
-	Printf.printf(")")
+        Printf.printf("echo(");
+        print_expr(e);
+        Printf.printf(")")
       )
 
 
@@ -183,12 +183,23 @@ let rec print_cmd c =
         Printf.printf ")";
         Printf.printf ",";
         print_cmd c
+      | ASTstatCmds (s , c) ->
+        print_stat s; 
+        Printf.printf ",";
+        print_cmd c
 	
+let print_block b = 
+  match b with 
+  | ASTblock cs -> 
+    Printf.printf"block"; 
+    Printf.printf"(["; 
+    print_cmd cs;
+    Printf.printf"])" 
   
 let print_prog p =
-  Printf.printf("prog([");
-  print_cmd p;
-  Printf.printf("])")
+  Printf.printf("prog(");
+  print_block p;
+  Printf.printf(")")
 ;;
 	
 let fname = Sys.argv.(1) in

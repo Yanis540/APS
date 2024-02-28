@@ -129,8 +129,14 @@ type_cmds(G,[X|Y],void) :-
 	type_stat(G,X,void), 
 	type_cmds(G,Y,void).
 
+
+/******************************* BLOCK ********************************/
+
+type_block(G,block(B),T):-
+    type_cmds(G,B,T).
+
 /******************************* PROG ********************************/
-type_prog(G,prog(X),void) :- type_cmds(G,X,void).
+type_prog(G,prog(X),void) :- type_block(G,X,void).
 
 /* d:-a,f(X) veut dire : d est vrai ssi si a est vrai et f(X) est vrai*/   
 

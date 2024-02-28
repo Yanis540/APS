@@ -193,14 +193,22 @@ let eval_def d env =
 
 let rec eval_cmd c env = 
   match c with 
-  | ASTStat s -> eval_stat s env 
+  | ASTStat s -> eval_stat s env
   | ASTdef (d , c) -> 
     let env' = eval_def (d) env in 
     eval_cmd c env'
+  | ASTstatCmds (s , c) -> 
+    let _ = eval_stat s env in 
+    let env_cmd = eval_cmd c env in 
+    env_cmd
   
+let eval_block b env = 
+  match b with 
+  | ASTblock cs -> eval_cmd cs env 
+
 
 let eval_prog p env0= 
-  eval_cmd p env0
+  eval_block p env0
 ;;
 
 
