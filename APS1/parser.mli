@@ -24,6 +24,7 @@ type token =
   | SET
   | WHILE
   | CALL
+  | VOID
 
 val prog :
   (Lexing.lexbuf  -> token) -> Lexing.lexbuf -> Ast.block

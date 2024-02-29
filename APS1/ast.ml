@@ -12,7 +12,7 @@
 (* 
   les typ et types : https://github.com/valeeraZ/Sorbonne_APS/blob/master/APS0/parser.mly   
 *)
-type tprim = Int | Bool 
+type tprim = Int | Bool | Void
 
 type typ = Type of tprim | TypeFunc of types * typ (*ARROW*)
 and types = typ list (* multiple types a * b  *)

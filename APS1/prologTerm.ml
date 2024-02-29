@@ -15,6 +15,7 @@ let primitive_to_string p =
   match p with 
   | Int -> "int"
   | Bool -> "bool"
+  | Void -> "void"
 
 
 

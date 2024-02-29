@@ -38,6 +38,7 @@ rule token = parse
   | "SET"           { SET }    
   | "WHILE"           { WHILE }    
   | "CALL"           { CALL }    
+  | "void"           { VOID }    
   | ['0'-'9']+('.'['0'-'9'])? as lxm { NUM(int_of_string lxm) }
   | ['a'-'z']['a'-'z''A'-'Z''0'-'9']* as lxm { IDENT(lxm) }
   | eof              { raise Eof }

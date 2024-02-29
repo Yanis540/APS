@@ -33,6 +33,7 @@ open Ast
 %token SET
 %token WHILE
 %token CALL
+%token VOID
 
 %type <Ast.expr> expr
 %type <Ast.expr list> exprs
@@ -99,6 +100,7 @@ exprs :
 tprim:
   INT                       { Int }
 | BOOL                      { Bool }
+| VOID                      { Void }
 ;
 
 typ:
