@@ -22,16 +22,64 @@ type prim =
 (*! Types & environnement  *)
 type environnement = binding list 
 and binding = Binding of  string * value
+and address = InA of int
 and value = 
   InZ of int 
   | InF of expr * string list * environnement 
   | InFR of  expr * string * string list * environnement
   | InP of prim
-  | InA of int  
+  | Address
   | None  
+;;
 
 type memory =  memory_element list
-and memory_element = Memory of int * value    
+and memory_element = Memory of address * value    
+
+
+
+(*! Memory allocation *)
+let get_memory_address (a:address) = 
+  match a with 
+  | InA a -> a
+;;
+
+let memRef = ref 0 ;; 
+let rec get_from_memory (mem:memory) (address: address)  = 
+  match mem with 
+  | [] -> failwith "No such address"
+  | m::mem' -> 
+    match m with 
+    Memory(na,v)-> 
+      if get_memory_address(na) == get_memory_address(address) then 
+        v
+      else
+        get_from_memory (mem') address
+;;
+
+(* alloc(σ) = (a, σ′) *)
+let alloc (mem:memory) = 
+  let allocation = (InA(!memRef),(Memory(InA(!memRef),None)::mem)) in 
+  memRef := !memRef +1; 
+  allocation
+;;
+
+(* returns : (old_value,new_memory) *)
+let update_address_value (mem:memory) (address:address) (v:value) = 
+  let rec update_mem_aux mem address v= 
+    match mem with 
+    | [] -> failwith "address not found"
+    | m::mem' -> 
+      match m with 
+      Memory (na,old_v)-> 
+        if get_memory_address(na) == get_memory_address(address) then 
+          (old_v,(Memory(na,v)::mem'))
+        else 
+          let (o,mem'') =  update_mem_aux (mem') (address) (v) in 
+          (o,m::mem'')
+  in 
+    update_mem_aux mem address v
+
+;;
 
 
 (* Merci Louic pour la remarque :))) *)
@@ -88,43 +136,6 @@ let add_variables_to_env (argz : string list) (values : value list) (env : envir
   add_to_env_aux argz values env
 
 
-(*! Memory allocation *)
-let memRef = ref 0 ;; 
-let rec get_from_memory (mem:memory) (address: int)  = 
-  match mem with 
-  | [] -> failwith "No such address"
-  | m::mem' -> 
-    match m with 
-    Memory(na,v)-> 
-      if na == address then 
-        v
-      else
-        get_from_memory (mem') address
-;;
-
-(* alloc(σ) = (a, σ′) *)
-let alloc (mem:memory) = 
-  let allocation = (!memRef,(Memory(!memRef,None)::mem)) in 
-  memRef := !memRef +1; 
-  allocation
-;;
-
-(* returns : (old_value,new_memory) *)
-let update_address_value (mem:memory) (address:int) (v:value) = 
-  let rec update_mem_aux mem address v= 
-    match mem with 
-    | [] -> failwith "address not found"
-    | m::mem' -> 
-      match m with 
-      Memory (na,old_v)-> 
-        if na == address then 
-          ((old_v),(Memory(na,v)::mem'))
-        else 
-          let (o,mem'') =  update_mem_aux (mem') (address) (v) in 
-          (o,m::mem'')
-  in 
-    update_mem_aux mem address v
-
 
 
 (*! Basic environnement *)
@@ -161,7 +172,7 @@ let pi_binary p v1 v2    =
 
 (*! Evaluate expression  *)
 
-let rec eval_expr e env= 
+let rec eval_expr e env mem= 
   match e with 
   | ASTNum(n) -> InZ(n)
   | ASTId(n) -> get_ident_value_from_env (n) (env)
@@ -187,6 +198,8 @@ let rec eval_expr e env=
     let v_i = eval_exprs exprs env  in 
     match ve with
     | InZ (n)-> failwith "Expected function but got integer" 
+    | InA (_)-> failwith "Expected function but got memory" 
+    | None-> failwith "Expected function but got None" 
     | InF (body_function,argz_string,env_function)-> 
       (* e1 .. en sont déjà évalué (représenter par v_i) et on a juste à rajouter dans l'enviornnment vi:valeur(ei)*)
       (* rajouter les couples (var,value) dans l'environnement de la fonction et l'évaluer dans cette environnement *)
@@ -238,10 +251,11 @@ let eval_stat s env output=
 
 
 
-let eval_def d env = 
+let eval_def d env mem = 
   match d with 
   | ASTconst(idf,t,e)-> 
-    let v = eval_expr e env in 
+    let v = eval_expr e env mem in 
+    let (nb,mem') = alloc(mem) in 
     let bind = Binding (idf,v) in 
     bind::env
   | ASTfunc(functionName,t,argz,e)-> 
@@ -260,18 +274,18 @@ let eval_def d env =
   | ASTprocRec(name,argz,b)-> env
 
 
-let rec eval_cmd c env output = 
+let rec eval_cmd c env mem output = 
   match c with 
-  | ASTStat s -> eval_stat s env output
+  | ASTStat s -> eval_stat s env mem output
   | ASTdef (d , c) -> 
-    let env' = eval_def (d) env in 
-    eval_cmd c env' output
+    let (env',mem') = eval_def (d) mem env in 
+    eval_cmd c env' mem' output
   | ASTstatCmds (s , c) -> 
-    let output' = eval_stat s env output in 
-    let output'' = eval_cmd c env output' in 
+    let output' = eval_stat s env  mem output in 
+    let output'' = eval_cmd c env mem output' in 
     output''
   
-let eval_block b env output = 
+let eval_block b env mem output = 
   match b with 
   | ASTblock cs -> eval_cmd cs env output
   
@@ -280,7 +294,7 @@ let rec print_output output =
   List.iter (function x -> print_value x) (List.rev output) 
 
 let eval_prog p env0= 
-  print_output (eval_block p env0 [])
+  print_output (eval_block p env0 [] [])
 ;;
 
 
