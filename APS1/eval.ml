@@ -27,6 +27,11 @@ and value =
   | InF of expr * string list * environnement 
   | InFR of  expr * string * string list * environnement
   | InP of prim
+  | InA of int  
+  | None  
+
+type memory =  memory_element list
+and memory_element = Memory of int * value    
 
 
 (* Merci Louic pour la remarque :))) *)
@@ -81,6 +86,46 @@ let add_variables_to_env (argz : string list) (values : value list) (env : envir
     | _ -> failwith "Function arguments mismatch"
   in
   add_to_env_aux argz values env
+
+
+(*! Memory allocation *)
+let memRef = ref 0 ;; 
+let rec get_from_memory (mem:memory) (address: int)  = 
+  match mem with 
+  | [] -> failwith "No such address"
+  | m::mem' -> 
+    match m with 
+    Memory(na,v)-> 
+      if na == address then 
+        v
+      else
+        get_from_memory (mem') address
+;;
+
+(* alloc(σ) = (a, σ′) *)
+let alloc (mem:memory) = 
+  let allocation = (!memRef,(Memory(!memRef,None)::mem)) in 
+  memRef := !memRef +1; 
+  allocation
+;;
+
+(* returns : (old_value,new_memory) *)
+let update_address_value (mem:memory) (address:int) (v:value) = 
+  let rec update_mem_aux mem address v= 
+    match mem with 
+    | [] -> failwith "address not found"
+    | m::mem' -> 
+      match m with 
+      Memory (na,old_v)-> 
+        if na == address then 
+          ((old_v),(Memory(na,v)::mem'))
+        else 
+          let (o,mem'') =  update_mem_aux (mem') (address) (v) in 
+          (o,m::mem'')
+  in 
+    update_mem_aux mem address v
+
+
 
 (*! Basic environnement *)
 
