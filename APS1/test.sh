@@ -22,26 +22,26 @@ traverse_directories() {
     # Boucle à travers chaque sous-répertoire dans le répertoire spécifié
     for sub_dir in "$dir_path"/*; do
         if [ -d "$sub_dir" ] && [ "$(basename "$sub_dir")" != "$exclude_directory" ]; then
-            echo "${indent}Traitement du sous-répertoire $(basename "$sub_dir") ..."
+            echo -e "${indent}Traitement du sous-répertoire $(basename "$sub_dir") ..."
             for file in "$sub_dir"/*; do
                 if [ -f "$file" ]; then
                     # Exécuter la commande spécifiée et capturer les erreurs
                     t_res=$(./prologTerm "$file" | swipl -s checker.pl -g  main_stdin 2>&1)
                     if [[ $t_res = *"void"* ]]; then 
-                        echo "${indent}$(basename "$file")  : Bien typé"
+                        echo -e "${indent}\t$(basename "$file")  : Bien typé"
                     else 
-                        echo "${indent}$(basename "$file")  : Mal typé"
+                        echo -e "${indent}\t$(basename "$file")  : Mal typé"
                     fi
                     res_eval=$(./eval "$file" 2>&1)
                     if [[ $res_eval = "Fatal error: exception Failure"* ]]; then 
-                        echo "${indent}$(basename "$file") : Eval Incorrect"
+                        echo -e "${indent}\t$(basename "$file") : Eval Incorrect"
                         echo "$(basename "$file") : $res_eval" >> "$error_file"
                     else 
-                        echo "${indent}$(basename "$file") : Eval Correct"
+                        echo -e "${indent}\t$(basename "$file") : Eval Correct"
                     fi
                 fi
             done
-            traverse_directories "$sub_dir" "$indent  "
+            traverse_directories "$sub_dir" "${indent}\t"
         fi
     done
 }
@@ -52,7 +52,7 @@ if [ -d "$main_directory" ]; then
     echo "Traitement du répertoire principal : $main_directory"
     
     # Appeler la fonction pour parcourir les sous-répertoires
-    traverse_directories "$main_directory" "  "
+    traverse_directories "$main_directory" "\t"
 else
     echo "Le répertoire principal $main_directory n'existe pas."
 fi
