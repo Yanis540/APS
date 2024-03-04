@@ -1,6 +1,6 @@
 ocamlc -c ast.ml
 ocamllex -o lexer.ml lexer.mll
-45 states, 1394 transitions, table size 5846 bytes
+67 states, 1694 transitions, table size 7178 bytes
 ocamlyacc -b parser parser.mly
 ocamlc -c parser.mli
 ocamlc -c lexer.ml
@@ -8,47 +8,71 @@ ocamlc -c parser.ml
 ocamlc -o prologTerm ast.cmo lexer.cmo parser.cmo prologTerm.ml
 ocamlc -c ast.ml
 ocamllex -o lexer.ml lexer.mll
-45 states, 1394 transitions, table size 5846 bytes
+67 states, 1694 transitions, table size 7178 bytes
 ocamlyacc -b parser parser.mly
 ocamlc -c parser.mli
 ocamlc -c lexer.ml
 ocamlc -c parser.ml
 ocamlc -o eval ast.cmo lexer.cmo parser.cmo eval.ml
 ##########################################################
-Traitement du répertoire defs ...
-const_1.aps  : Bien typé
-const_1.aps : Eval Correct
-const_2.aps  : Bien typé
-const_2.aps : Eval Correct
-const_3.aps  : Bien typé
-const_3.aps : Eval Correct
-fun_1.aps  : Bien typé
-fun_1.aps : Eval Correct
-fun_2.aps  : Bien typé
-fun_2.aps : Eval Correct
-fun_3.aps  : Bien typé
-fun_3.aps : Eval Correct
-funrec_1.aps  : Bien typé
-funrec_1.aps : Eval Correct
-##########################################################
-Traitement du répertoire exprs ...
-abs_1.aps  : Bien typé
-abs_1.aps : Eval Correct
-abs_2.aps  : Bien typé
-abs_2.aps : Eval Correct
-and.aps  : Bien typé
-and.aps : Eval Correct
-app_1.aps  : Bien typé
-app_1.aps : Eval Correct
-or.aps  : Bien typé
-or.aps : Eval Correct
-##########################################################
-Traitement du répertoire prim ...
-eq.aps  : Bien typé
-eq.aps : Eval Correct
-mul.aps  : Bien typé
-mul.aps : Eval Correct
-not_1.aps  : Mal typé
-not_1.aps : Eval Correct
-not_2.aps  : Bien typé
-not_2.aps : Eval Correct
+Traitement du répertoire principal : ./Samples
+  Traitement du sous-répertoire cmds ...
+  cmds_1.aps  : Bien typé
+  cmds_1.aps : Eval Correct
+  Traitement du sous-répertoire defs ...
+  const_1.aps  : Bien typé
+  const_1.aps : Eval Correct
+  const_2.aps  : Bien typé
+  const_2.aps : Eval Correct
+  const_3.aps  : Bien typé
+  const_3.aps : Eval Correct
+  fun_1.aps  : Bien typé
+  fun_1.aps : Eval Correct
+  fun_2.aps  : Bien typé
+  fun_2.aps : Eval Correct
+  fun_3.aps  : Bien typé
+  fun_3.aps : Eval Correct
+  funrec_1.aps  : Bien typé
+  funrec_1.aps : Eval Correct
+  procRec_1.aps  : Bien typé
+  procRec_1.aps : Eval Correct
+  proc_1.aps  : Bien typé
+  proc_1.aps : Eval Correct
+  var_1.aps  : Bien typé
+  var_1.aps : Eval Correct
+  Traitement du sous-répertoire exprs ...
+  abs_1.aps  : Bien typé
+  abs_1.aps : Eval Correct
+  abs_2.aps  : Bien typé
+  abs_2.aps : Eval Correct
+  and.aps  : Bien typé
+  and.aps : Eval Correct
+  app_1.aps  : Bien typé
+  app_1.aps : Eval Correct
+  or.aps  : Bien typé
+  or.aps : Eval Correct
+  Traitement du sous-répertoire prim ...
+  eq.aps  : Bien typé
+  eq.aps : Eval Correct
+  mul.aps  : Bien typé
+  mul.aps : Eval Correct
+  not_1.aps  : Mal typé
+  not_1.aps : Eval Correct
+  not_2.aps  : Bien typé
+  not_2.aps : Eval Correct
+  Traitement du sous-répertoire stat ...
+  call_1.aps  : Bien typé
+  call_1.aps : Eval Correct
+  if_1.aps  : Bien typé
+  if_1.aps : Eval Correct
+  set_1.aps  : Mal typé
+  set_1.aps : Eval Correct
+  set_2.aps  : Bien typé
+  set_2.aps : Eval Correct
+  set_3.aps  : Mal typé
+  set_3.aps : Eval Correct
+  while_1.aps  : Bien typé
+  while_1.aps : Eval Correct
+  Traitement du sous-répertoire types ...
+  void_1.aps  : Bien typé
+  void_1.aps : Eval Correct
