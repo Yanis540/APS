@@ -131,23 +131,42 @@ let rec get_arguments_in_string_list (argz) : (string list) =
       (get_argument_ident a)::(get_arguments_in_string_list argz')
       
 
+(* returns : env *)
+let add_variables_to_env (argz : string list) (values : value list) (env : environnement) : (environnement) =
+  let rec add_to_env_aux argz vals acc_env  =
+    match argz, vals with
+    | [], [] -> (acc_env)
+    | arg :: rest_argz, v :: rest_values ->
+      let binding = Binding(arg, v) in
+      let env' = binding :: acc_env in 
+      add_to_env_aux rest_argz rest_values (env') 
+    | _ -> failwith "Arguments and values mismatch"
+  in
+  add_to_env_aux argz values env 
+;;
+
+let add_variable_to_env (arg : string) (v : value) (env : environnement)  : (environnement) = 
+add_variables_to_env ([arg]) ([v]) (env)
+;;
+
+
 (* returns : (env,mem) *)
-let add_variables_to_env (argz : string list) (values : value list) (env : environnement) (mem : memory) : (environnement*memory) =
-  let rec add_to_env_aux argz vals acc_env acc_mem =
+let add_variables_mem_to_env (argz : string list) (values : value list) (env : environnement) (mem : memory) : (environnement*memory) =
+  let rec add_to_mem_env_aux argz vals acc_env acc_mem =
     match argz, vals with
     | [], [] -> (acc_env,acc_mem)
     | arg :: rest_argz, v :: rest_values ->
       let (address,mem') = init_mem_value (v) (acc_mem) in 
       let binding = Binding(arg, InAddress(address)) in
       let env' = binding :: acc_env in 
-      add_to_env_aux rest_argz rest_values (env') (mem')
+      add_to_mem_env_aux rest_argz rest_values (env') (mem')
     | _ -> failwith "Arguments and values mismatch"
   in
-  add_to_env_aux argz values env mem
+  add_to_mem_env_aux argz values env mem
 
 
-let add_variable_to_env (arg : string) (v : value) (env : environnement) (mem : memory) : (environnement*memory) = 
-  add_variables_to_env ([arg]) ([v]) (env) (mem)
+let add_variable_to_mem_env (arg : string) (v : value) (env : environnement) (mem : memory) : (environnement*memory) = 
+  add_variables_mem_to_env ([arg]) ([v]) (env) (mem)
 
 
 
@@ -216,16 +235,16 @@ let rec eval_expr e env mem=
     | InF (body_function,argz_string,env_function)-> 
       (* e1 .. en sont déjà évalué (représenter par v_i) et on a juste à rajouter dans l'enviornnment vi:valeur(ei)*)
       (* rajouter les couples (var,value) dans l'environnement de la fonction et l'évaluer dans cette environnement *)
-      let (env_function',mem') = add_variables_to_env (argz_string) (v_i) (env_function) (mem) in 
-      eval_expr (body_function) (env_function') (mem')
+      let env_function' = add_variables_to_env (argz_string) (v_i) (env_function) in 
+      eval_expr (body_function) (env_function') (mem)
     | InFR (body_function,functionName,argz_string,env_function)-> 
       (* rajouter les couples (var,value) dans l'environnement de la fonction et l'évaluer dans cette environnement *)
       (* puis rajouter la définition de la fonction pour permettre les accès récusrif dans le body *)
       let rec_func_def = InFR  (body_function,functionName,argz_string,env_function) in 
       let argz_string_function_rec = functionName::argz_string in 
       let v_i_function_rec = rec_func_def::v_i in 
-      let (env_function',mem') = add_variables_to_env (argz_string_function_rec) (v_i_function_rec) (env_function) (mem) in 
-      eval_expr (body_function) (env_function') (mem')
+      let env_function' = add_variables_to_env (argz_string_function_rec) (v_i_function_rec) (env_function) in 
+      eval_expr (body_function) (env_function') (mem)
         
     | InP _ -> 
       match List.length exprs with 
@@ -268,24 +287,21 @@ let eval_def d env mem =
   match d with 
   | ASTconst(idf,t,e)-> 
     let v = eval_expr e env mem in 
-    let (address,mem') = init_mem_value (v) (mem) in 
-    let bind = Binding (idf,InAddress(address)) in 
+    let bind = Binding (idf,v) in 
     let env' = (bind :: env) in 
-    (env',mem')
+    (env',mem)
   | ASTfunc(functionName,t,argz,e)-> 
     let argz_string = get_arguments_in_string_list (argz) in 
     let v = InF (e, argz_string ,env) in 
-    let (address,mem') = init_mem_value (v) (mem) in 
-    let bind = Binding(functionName,InAddress(address)) in 
+    let bind = Binding(functionName,v) in 
     let env' = (bind :: env) in 
-    (env',mem')
+    (env',mem)
   | ASTfuncRec(functionName,t,argz,e)-> 
     let argz_string = get_arguments_in_string_list (argz) in 
     let v = InFR ( e, functionName,argz_string, env) in
-    let (address,mem') = init_mem_value (v) (mem) in 
-    let bind = Binding(functionName,InAddress(address)) in 
+    let bind = Binding(functionName,v) in 
     let env' = (bind :: env) in 
-    (env',mem')
+    (env',mem)
   (*! TODO  *)
   | ASTvar(name,t)-> (env,mem)
   | ASTproc(name,argz,b)-> (env,mem)
