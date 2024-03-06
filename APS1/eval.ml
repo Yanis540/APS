@@ -29,8 +29,8 @@ and value =
   | InFR of  expr * string * string list * environnement
   | InPrim of prim
   | InAddress of address
-  | InP of cmds * string list * expr
-  | InPR of cmds * string *  string list * expr
+  | InP of block * string list * environnement
+  | InPR of block * string *  string list * environnement
   | None  
 ;;
 
@@ -257,6 +257,8 @@ let rec eval_expr e env mem=
     | InZ (n)-> InZ(n) (* ça marche je ne sais pas pourquoi *)
     | InAddress (_)-> failwith "Expected function but got memory" 
     | None-> failwith "Expected function but got None" 
+    | InP _-> failwith "Expected function but got Procedure" 
+    | InPR _-> failwith "Expected function but got Procedure" 
     | InF (body_function,argz_string,env_function)-> 
       (* e1 .. en sont déjà évalué (représenter par v_i) et on a juste à rajouter dans l'enviornnment vi:valeur(ei)*)
       (* rajouter les couples (var,value) dans l'environnement de la fonction et l'évaluer dans cette environnement *)
@@ -270,7 +272,6 @@ let rec eval_expr e env mem=
       let v_i_function_rec = rec_func_def::v_i in 
       let env_function' = add_variables_to_env (argz_string_function_rec) (v_i_function_rec) (env_function) in 
       eval_expr (body_function) (env_function') (mem)
-        
     | InPrim _ -> 
       match List.length exprs with 
       | 1 -> pi_unary ve (List.nth v_i 0)
@@ -339,8 +340,18 @@ let eval_def d env mem =
     let bind = Binding(name,address) in
     let env' = (bind :: env) in  
     (env',mem')
-  | ASTproc(name,argz,b)-> (env,mem)
-  | ASTprocRec(name,argz,b)-> (env,mem)
+  | ASTproc(name,argz,b)-> 
+    let argz_string = get_arguments_in_string_list (argz) in 
+    let v= InP(b,argz_string,env) in 
+    let binding = Binding(name,v) in 
+    let env' =(binding::env) in 
+    (env',mem)
+  | ASTprocRec(name,argz,b)->
+    let argz_string = get_arguments_in_string_list (argz) in 
+    let v= InPR(b,name,argz_string,env) in 
+    let binding = Binding(name,v) in 
+    let env' =(binding::env) in 
+    (env',mem)
 
 (* @returns : (mem,output) *)
 let rec eval_cmd c env mem output = 
