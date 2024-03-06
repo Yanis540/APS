@@ -26,7 +26,7 @@ and value =
   InZ of int 
   | InF of expr * string list * environnement 
   | InFR of  expr * string * string list * environnement
-  | InP of prim
+  | InPrim of prim
 
 (* Merci Louic pour la remarque :))) *)
 let print_value value =
@@ -86,29 +86,29 @@ let add_variables_to_env (argz : string list) (values : value list) (env : envir
 let env0 = [
   Binding ("true" , InZ(1));
   Binding ("false" , InZ(0));
-  Binding ("add" , InP (Add));
-  Binding ("sub" , InP (Sub));
-  Binding ("eq" , InP (Eq));
-  Binding ("lt" , InP (Lt));
-  Binding ("mul" , InP (Mul));
-  Binding ("div" , InP (Div));
-  Binding ("not" , InP (Not));
+  Binding ("add" , InPrim (Add));
+  Binding ("sub" , InPrim (Sub));
+  Binding ("eq" , InPrim (Eq));
+  Binding ("lt" , InPrim (Lt));
+  Binding ("mul" , InPrim (Mul));
+  Binding ("div" , InPrim (Div));
+  Binding ("not" , InPrim (Not));
 ]
 
 let pi_unary p v1  =
   match p,v1 with 
-  | InP Not,(InZ(0 as n)|InZ(1 as n)) -> 
+  | InPrim Not,(InZ(0 as n)|InZ(1 as n)) -> 
     if(n==0) then InZ(1) else InZ(0)
   | _ -> failwith "No unary operation"
 
   
 let pi_binary p v1 v2    =
   match p with 
-  | InP Eq -> if get_int_value(v1) == get_int_value(v2) then InZ(1) else InZ(0)
-  | InP Lt -> if get_int_value(v1) < get_int_value(v2) then InZ(1) else InZ(0)
-  | InP Add -> InZ(get_int_value(v1)+get_int_value(v2))
-  | InP Mul -> InZ(get_int_value(v1)*get_int_value(v2))
-  | InP Div -> InZ(get_int_value(v1)/get_int_value(v2))
+  | InPrim Eq -> if get_int_value(v1) == get_int_value(v2) then InZ(1) else InZ(0)
+  | InPrim Lt -> if get_int_value(v1) < get_int_value(v2) then InZ(1) else InZ(0)
+  | InPrim Add -> InZ(get_int_value(v1)+get_int_value(v2))
+  | InPrim Mul -> InZ(get_int_value(v1)*get_int_value(v2))
+  | InPrim Div -> InZ(get_int_value(v1)/get_int_value(v2))
   | _-> failwith "No such binary operation"
 
 
@@ -155,7 +155,7 @@ let rec eval_expr e env=
       let env_function' = add_variables_to_env (argz_string_function_rec) (v_i_function_rec) (env_function) in 
       eval_expr (body_function) (env_function')
         
-    | InP _ -> 
+    | InPrim _ -> 
       match List.length exprs with 
       | 1 -> pi_unary ve (List.nth v_i 0)
       | 2 -> pi_binary ve (List.nth v_i 0) (List.nth v_i 1)
