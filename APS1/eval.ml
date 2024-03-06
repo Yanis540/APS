@@ -43,6 +43,13 @@ let get_memory_address (a:address) =
   | InA a -> a
 ;;
 
+let get_memory_address_from_value (v : value) : address = 
+  match v with
+  | InAddress (a) -> a   
+  | _ -> failwith "Not a memory address" 
+;;  
+
+
 let memRef = ref 0 ;; 
 let rec get_address_value_from_memory (address: address) (mem:memory) : value   = 
   match mem with 
@@ -81,10 +88,11 @@ let update_address_value (mem:memory) (address:address) (v:value) =
 
 ;;
 
-let init_mem_value (v:value) (mem:memory) : (address*memory) = 
+(*@retrurns : (InAddress(address),memory) *)
+let init_mem_value (v:value) (mem:memory) : (value*memory) = 
   let (a,mem') = alloc(mem) in 
   let (_,mem'') = update_address_value (mem') (a) (v) in 
-  (a,mem'')
+  (InAddress(a),mem'')
 
 
 (* Merci Louic pour la remarque :))) *)
@@ -92,6 +100,20 @@ let print_value value =
   match value with
     InZ(n) -> Printf.printf "%d\n" n
   | _ -> failwith "Can't print non integer type"
+ 
+;;
+
+let print_value_from_memory (a:address) (mem :memory)  = 
+  let v = get_address_value_from_memory(a) (mem) in 
+  print_value v
+;;
+
+
+let print_generic_value (v : value) (mem:memory)= 
+  match v with 
+  | InAddress a -> print_value_from_memory (a) (mem)
+  | _ -> print_value v
+;;
 
 (*! Getters for env  *)
 
@@ -100,7 +122,8 @@ let rec get_ident_value_from_env (ident  : string) (env : environnement) (mem : 
   [] -> failwith "Variable not in env" 
   | (Binding (s,v)):: xs ->
     match v with 
-    | InAddress (address) -> get_address_value_from_memory  (address) (mem)
+    | InAddress (address) -> v
+    (* | InAddress (address) -> get_address_value_from_memory  (address) (mem) *)
     | _ ->
       if (compare ident s) ==  0 then v 
       else get_ident_value_from_env ident xs mem
@@ -157,7 +180,7 @@ let add_variables_mem_to_env (argz : string list) (values : value list) (env : e
     | [], [] -> (acc_env,acc_mem)
     | arg :: rest_argz, v :: rest_values ->
       let (address,mem') = init_mem_value (v) (acc_mem) in 
-      let binding = Binding(arg, InAddress(address)) in
+      let binding = Binding(arg, address) in
       let env' = binding :: acc_env in 
       add_to_mem_env_aux rest_argz rest_values (env') (mem')
     | _ -> failwith "Arguments and values mismatch"
@@ -262,23 +285,29 @@ and eval_exprs es env mem =
   (* | [e]-> [eval_expr e env]   *)
   | e::es'-> (eval_expr e env mem)::(eval_exprs es' env mem)
       
-(* retourne le output updated *)
+(* @retrusn : (new_memory,new_output) *)
 let eval_stat s env mem output= 
   match s with 
   | ASTEcho e -> 
-      (eval_expr e env mem )::output
-  | ASTset (var,e)-> 
+      (mem,(eval_expr e env mem )::output)
+  | ASTset (varName,e)-> 
       (*! TODO *)
-      output
+      (* récupérer la valeur de l'env *)
+      let value_address = get_ident_value_from_env (varName) (env) (mem) in 
+      (* récupérer l'address  *)
+      let address = get_memory_address_from_value(value_address) in 
+      let new_value = eval_expr e env mem  in 
+      let (old_value, mem') = update_address_value (mem) (address) (new_value) in 
+      (mem',output)
   | ASTif (cond,b_cons,b_alt)-> 
       (*! TODO *)
-      output
+      (mem,output)
   | ASTwhile (cond,b)-> 
       (*! TODO *)
-      output
+      (mem,output)
   | ASTcall (name,es)-> 
       (*! TODO *)
-      output
+      (mem,output)
     
 
 
@@ -303,11 +332,15 @@ let eval_def d env mem =
     let env' = (bind :: env) in 
     (env',mem)
   (*! TODO  *)
-  | ASTvar(name,t)-> (env,mem)
+  | ASTvar(name,t)-> 
+    let (address,mem') = init_mem_value (None) (mem) in 
+    let bind = Binding(name,address) in
+    let env' = (bind :: env) in  
+    (env',mem')
   | ASTproc(name,argz,b)-> (env,mem)
   | ASTprocRec(name,argz,b)-> (env,mem)
 
-
+(* @returns : (mem,output) *)
 let rec eval_cmd c env mem output = 
   match c with 
   | ASTStat s -> eval_stat s env mem output
@@ -315,20 +348,21 @@ let rec eval_cmd c env mem output =
     let (env',mem') = eval_def d env mem in 
     eval_cmd c env' mem' output
   | ASTstatCmds (s , c) -> 
-    let output' = eval_stat s env  mem output in 
-    let output'' = eval_cmd c env mem output' in 
-    output''
+    let (mem',output') = eval_stat s env  mem output in 
+    let (mem'',output'') = eval_cmd c env mem' output' in 
+    (mem'',output'')
   
 let eval_block b env mem output = 
   match b with 
   | ASTblock cs -> eval_cmd cs env mem output
   
 
-let rec print_output output =
-  List.iter (function x -> print_value x) (List.rev output) 
+let rec print_output mem output =
+  List.iter (function v -> print_generic_value v mem) (List.rev output) 
 
 let eval_prog p env0= 
-  print_output (eval_block p env0 [] [])
+  let (mem',output') =  eval_block p env0 [] [] in 
+  print_output (mem')(output')
 ;;
 
 
