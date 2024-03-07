@@ -214,9 +214,10 @@ let pi_unary p v1  =
   
 let pi_binary p v1 v2    =
   match p with 
+  | InPrim Add -> InZ(get_int_value(v1)+get_int_value(v2))
+  | InPrim Sub -> InZ(get_int_value(v1)-get_int_value(v2))
   | InPrim Eq -> if get_int_value(v1) == get_int_value(v2) then InZ(1) else InZ(0)
   | InPrim Lt -> if get_int_value(v1) < get_int_value(v2) then InZ(1) else InZ(0)
-  | InPrim Add -> InZ(get_int_value(v1)+get_int_value(v2))
   | InPrim Mul -> InZ(get_int_value(v1)*get_int_value(v2))
   | InPrim Div -> InZ(get_int_value(v1)/get_int_value(v2))
   | _-> failwith "No such binary operation"
@@ -232,8 +233,8 @@ let rec eval_expr e env mem=
       let v = get_ident_value_from_env (n) (env) in 
       (
         match v with 
-      | InAddress (a) -> get_address_value_from_memory (a) (mem) 
-      | v -> v 
+        | InAddress (a) -> get_address_value_from_memory (a) (mem) 
+        | v -> v 
       )
  
   | ASTif(cond,cons,alt) -> 
@@ -308,13 +309,13 @@ let rec eval_stat s env mem output=
   | ASTif (cond,b_cons,b_alt)-> 
       let cond_value = eval_expr cond env mem in 
       let c  = get_bool_value(cond_value) in 
-      (* Printf.printf "%b" c; *)
       if( c == true) then 
-        eval_block b_cons env mem output
+        let (mem',output')= eval_block b_cons env mem output in 
+        (mem',output')
       else 
-        eval_block b_alt env mem output
+        let (mem',output')=eval_block b_alt env mem output in 
+        (mem',output')
   | ASTwhile (cond,b_while)-> 
-      (*! TODO *)
       let cond_value = eval_expr cond env mem in 
       let c  = get_bool_value(cond_value) in 
       if( c == false) then 
@@ -324,19 +325,21 @@ let rec eval_stat s env mem output=
         let (mem'',output'' ) = eval_stat s env mem' output' in 
         (mem'',output'')
   | ASTcall (name,exprs)-> 
-      (*! TODO *)
       let v = get_ident_value_from_env (name) (env) in 
       let v_i = eval_exprs exprs env mem in 
-      (
-        match v with 
-        | InP(body_proc,argz_string,env_proc) ->
-          let env_proc' = add_variables_to_env (argz_string) (v_i) (env_proc) in 
-          let (mem',output') = eval_block (body_proc) (env_proc') (mem) (output) in 
-          (mem',output')
-        | InPR(body_proc,procName,argz_string,env_proc) ->
-          (mem,output)
-        | _ -> failwith "Expected procedure but receieved other type"
-      )
+      match v with 
+      | InP(body_proc,argz_string,env_proc) ->
+        let env_proc' = add_variables_to_env (argz_string) (v_i) (env_proc) in 
+        let (mem',output') = eval_block (body_proc) (env_proc') (mem) (output) in 
+        (mem',output')
+      | InPR(body_proc,procName,argz_string,env_proc) ->
+        let rec_proc_def = InPR  (body_proc,procName,argz_string,env_proc) in 
+        let argz_string_proc_rec = procName::argz_string in 
+        let v_i_proc_rec = rec_proc_def::v_i in 
+        let env_proc' = add_variables_to_env (argz_string_proc_rec) (v_i_proc_rec) (env_proc) in 
+        let (mem',output') = eval_block (body_proc) (env_proc') (mem) (output) in 
+        (mem',output')
+      | _ -> failwith "Expected procedure but receieved other type"
     
 
 

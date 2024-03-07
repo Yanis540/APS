@@ -104,9 +104,10 @@ let pi_unary p v1  =
   
 let pi_binary p v1 v2    =
   match p with 
+  | InPrim Add -> InZ(get_int_value(v1)+get_int_value(v2))
+  | InPrim Sub -> InZ(get_int_value(v1)-get_int_value(v2))
   | InPrim Eq -> if get_int_value(v1) == get_int_value(v2) then InZ(1) else InZ(0)
   | InPrim Lt -> if get_int_value(v1) < get_int_value(v2) then InZ(1) else InZ(0)
-  | InPrim Add -> InZ(get_int_value(v1)+get_int_value(v2))
   | InPrim Mul -> InZ(get_int_value(v1)*get_int_value(v2))
   | InPrim Div -> InZ(get_int_value(v1)/get_int_value(v2))
   | _-> failwith "No such binary operation"

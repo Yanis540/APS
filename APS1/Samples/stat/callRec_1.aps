@@ -1,0 +1,14 @@
+[
+    VAR y int;
+    SET y 1 ; 
+    PROC REC f [n:int] [
+        if (eq y 0) [
+            ECHO y
+        ][
+            ECHO y ; 
+            SET y (sub y 1); 
+            CALL f 1
+        ]
+    ]; 
+    CALL f 1
+]
