@@ -319,7 +319,7 @@ let yyact = [|
     let _4 = (Parsing.peek_val __caml_parser_env 0 : Ast.block) in
     Obj.repr(
 # 77 "parser.mly"
-                       (ASTif(_2,_3,_3))
+                       (ASTif(_2,_3,_4))
 # 324 "parser.ml"
                : 'stat))
 ; (fun __caml_parser_env ->

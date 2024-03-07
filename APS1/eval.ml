@@ -137,7 +137,7 @@ let get_int_value (v:value)=
   | _ -> failwith "Not an integer value" 
 
 
-let get_bool_value (v:value)=
+let get_bool_value (v:value):bool=
   match v with 
   | (InZ(0 as n)| InZ(1 as n)) -> 
       n!=0
@@ -289,7 +289,7 @@ and eval_exprs es env mem =
   | e::es'-> (eval_expr e env mem)::(eval_exprs es' env mem)
       
 (* @retrusn : (new_memory,new_output) *)
-let eval_stat s env mem output= 
+let rec eval_stat s env mem output= 
   match s with 
   | ASTEcho e -> 
       (mem,(eval_expr e env mem )::output)
@@ -304,7 +304,13 @@ let eval_stat s env mem output=
       (mem',output)
   | ASTif (cond,b_cons,b_alt)-> 
       (*! TODO *)
-      (mem,output)
+      let cond_value = eval_expr cond env mem in 
+      let c  = get_bool_value(cond_value) in 
+      (* Printf.printf "%b" c; *)
+      if( c == true) then 
+        eval_block b_cons env mem output
+      else 
+        eval_block b_alt env mem output
   | ASTwhile (cond,b)-> 
       (*! TODO *)
       (mem,output)
@@ -315,7 +321,7 @@ let eval_stat s env mem output=
 
 
 
-let eval_def d env mem = 
+and eval_def d env mem = 
   match d with 
   | ASTconst(idf,t,e)-> 
     let v = eval_expr e env mem in 
@@ -354,7 +360,7 @@ let eval_def d env mem =
     (env',mem)
 
 (* @returns : (mem,output) *)
-let rec eval_cmd c env mem output = 
+and eval_cmd c env mem output = 
   match c with 
   | ASTStat s -> eval_stat s env mem output
   | ASTdef (d , c) -> 
@@ -364,8 +370,8 @@ let rec eval_cmd c env mem output =
     let (mem',output') = eval_stat s env  mem output in 
     let (mem'',output'') = eval_cmd c env mem' output' in 
     (mem'',output'')
-  
-let eval_block b env mem output = 
+(* @returns : (new_mem,new_output) *)
+and eval_block b env mem output = 
   match b with 
   | ASTblock cs -> eval_cmd cs env mem output
   
