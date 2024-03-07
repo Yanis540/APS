@@ -1,7 +1,10 @@
 [
-    PROC x [y:int] [
-        SET y (add y 1)
-
+    VAR y int;
+    SET y 1 ; 
+    PROC x [z:int] [
+        SET y 2 ; 
+        ECHO y ; 
+        ECHO z
     ]; 
-    CALL x 2
+    CALL x y
 ]

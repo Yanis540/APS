@@ -167,7 +167,7 @@ let add_variables_to_env (argz : string list) (values : value list) (env : envir
 ;;
 
 let add_variable_to_env (arg : string) (v : value) (env : environnement)  : (environnement) = 
-add_variables_to_env ([arg]) ([v]) (env)
+  add_variables_to_env ([arg]) ([v]) (env)
 ;;
 
 
@@ -323,9 +323,20 @@ let rec eval_stat s env mem output=
         let (mem',output') = eval_block b_while env mem output in  
         let (mem'',output'' ) = eval_stat s env mem' output' in 
         (mem'',output'')
-  | ASTcall (name,es)-> 
+  | ASTcall (name,exprs)-> 
       (*! TODO *)
-      (mem,output)
+      let v = get_ident_value_from_env (name) (env) in 
+      let v_i = eval_exprs exprs env mem in 
+      (
+        match v with 
+        | InP(body_proc,argz_string,env_proc) ->
+          let env_proc' = add_variables_to_env (argz_string) (v_i) (env_proc) in 
+          let (mem',output') = eval_block (body_proc) (env_proc') (mem) (output) in 
+          (mem',output')
+        | InPR(body_proc,procName,argz_string,env_proc) ->
+          (mem,output)
+        | _ -> failwith "Expected procedure but receieved other type"
+      )
     
 
 
