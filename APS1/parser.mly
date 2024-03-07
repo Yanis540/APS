@@ -90,7 +90,8 @@ expr:
 ;
 
 exprs :  
-  expr          { [$1] }
+/* EMPTY */ {[]}
+|  expr          { [$1] }
 | expr exprs { $1 :: $2 }
 ;
 
@@ -116,6 +117,8 @@ types:
 arg: IDENT COLON typ {Argument($1,$3)}
 ; 
 args :
-|  arg { [$1] }
+  /* EMPTY */ {[]}
+| arg { [$1] }
 | arg COMMA args { $1 :: $3 }
+
 ;

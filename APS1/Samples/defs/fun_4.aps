@@ -1,4 +1,4 @@
 [ 
     FUN f int [] (add 1 1) ; 
-    ECHO 1
+    ECHO (f)
 ]

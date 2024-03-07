@@ -16,9 +16,8 @@ Traitement du répertoire principal : ./Samples
 		fun_2.aps : Eval Correct
 		fun_3.aps  : Bien typé
 		fun_3.aps : Eval Correct
-Fatal error: exception Stdlib.Parsing.Parse_error
-		fun_4.aps  : Mal typé
-		fun_4.aps : Eval Incorrect
+		fun_4.aps  : Bien typé
+		fun_4.aps : Eval Correct
 		funrec_1.aps  : Bien typé
 		funrec_1.aps : Eval Correct
 		procRec_1.aps  : Bien typé
