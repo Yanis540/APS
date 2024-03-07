@@ -89,9 +89,9 @@ expr:
 | LPAR expr exprs RPAR  { ASTApp($2, $3) }
 ;
 
-exprs :
-  expr       { [$1] }
-| expr exprs { $1::$2 }
+exprs :  
+  expr          { [$1] }
+| expr exprs { $1 :: $2 }
 ;
 
 // https://github.com/valeeraZ/Sorbonne_APS/blob/master/APS0/parser.mly
@@ -115,7 +115,7 @@ types:
 
 arg: IDENT COLON typ {Argument($1,$3)}
 ; 
-args : 
-  arg {[$1]}
-| arg COMMA args {$1::$3}
+args :
+|  arg { [$1] }
+| arg COMMA args { $1 :: $3 }
 ;

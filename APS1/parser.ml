@@ -397,7 +397,7 @@ let yyact = [|
     let _1 = (Parsing.peek_val __caml_parser_env 0 : Ast.expr) in
     Obj.repr(
 # 93 "parser.mly"
-             ( [_1] )
+                ( [_1] )
 # 402 "parser.ml"
                : Ast.expr list))
 ; (fun __caml_parser_env ->
@@ -405,7 +405,7 @@ let yyact = [|
     let _2 = (Parsing.peek_val __caml_parser_env 0 : Ast.expr list) in
     Obj.repr(
 # 94 "parser.mly"
-             ( _1::_2 )
+             ( _1 :: _2 )
 # 410 "parser.ml"
                : Ast.expr list))
 ; (fun __caml_parser_env ->
@@ -468,7 +468,7 @@ let yyact = [|
     let _1 = (Parsing.peek_val __caml_parser_env 0 : Ast.arg) in
     Obj.repr(
 # 119 "parser.mly"
-      ([_1])
+       ( [_1] )
 # 473 "parser.ml"
                : Ast.args))
 ; (fun __caml_parser_env ->
@@ -476,7 +476,7 @@ let yyact = [|
     let _3 = (Parsing.peek_val __caml_parser_env 0 : Ast.args) in
     Obj.repr(
 # 120 "parser.mly"
-                 (_1::_3)
+                 ( _1 :: _3 )
 # 481 "parser.ml"
                : Ast.args))
 (* Entry prog *)

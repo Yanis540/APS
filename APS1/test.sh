@@ -9,10 +9,28 @@ main_directory="./Samples"
 # Nom du répertoire à exclure
 exclude_directory="archive"
 
+# Répertoire pour enregistrer les résultats
+results_directory="results"
+
+
+# Vérifier si le répertoire de résultats existe, sinon le créer
+if [ ! -d "$results_directory" ]; then
+    mkdir "$results_directory"
+fi
+
+
+
 # Nom du fichier pour enregistrer les erreurs
-error_file="errors.txt"
+error_file="${results_directory}/errors.txt"
+
+# Créer le fichier d'erreurs s'il n'existe pas
+if [ ! -f "$error_file" ]; then
+    touch "$error_file"
+fi
+
 # Effacer le contenu du fichier d'erreurs
 > "$error_file"
+
 
 # Fonction récursive pour parcourir les sous-répertoires et détecter les erreurs
 traverse_directories() {
@@ -25,7 +43,7 @@ traverse_directories() {
             echo -e "${indent}Traitement du sous-répertoire $(basename "$sub_dir") ..."
             for file in "$sub_dir"/*; do
                 if [ -f "$file" ]; then
-                    # Exécuter la commande spécifiée et capturer les erreurs
+                    # Exécuter la commande spécifiée et capturer les sorties
                     t_res=$(./prologTerm "$file" | swipl -s checker.pl -g  main_stdin 2>&1)
                     if [[ $t_res = *"void"* ]]; then 
                         echo -e "${indent}\t$(basename "$file")  : Bien typé"
@@ -33,7 +51,7 @@ traverse_directories() {
                         echo -e "${indent}\t$(basename "$file")  : Mal typé"
                     fi
                     res_eval=$(./eval "$file" 2>&1)
-                    if [[ $res_eval = "Fatal error: exception Failure"* ]]; then 
+                    if [[ $res_eval = "Fatal error: "* ]]; then 
                         echo -e "${indent}\t$(basename "$file") : Eval Incorrect"
                         echo "$(basename "$file") : $res_eval" >> "$error_file"
                     else 
@@ -55,4 +73,4 @@ if [ -d "$main_directory" ]; then
     traverse_directories "$main_directory" "\t"
 else
     echo "Le répertoire principal $main_directory n'existe pas."
-fi
+fi 2>&1 | tee "results/results.txt" > /dev/null

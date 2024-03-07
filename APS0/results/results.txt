@@ -1,0 +1,48 @@
+##########################################################
+Traitement du répertoire principal : ./Samples
+	Traitement du sous-répertoire defs ...
+		const_1.aps  : Bien typé
+		const_1.aps : Eval Correct
+		const_2.aps  : Bien typé
+		const_2.aps : Eval Correct
+		const_3.aps  : Bien typé
+		const_3.aps : Eval Correct
+		fun_1.aps  : Bien typé
+		fun_1.aps : Eval Correct
+		fun_2.aps  : Bien typé
+		fun_2.aps : Eval Correct
+		fun_3.aps  : Bien typé
+		fun_3.aps : Eval Correct
+Fatal error: exception Stdlib.Parsing.Parse_error
+		fun_4.aps  : Mal typé
+		fun_4.aps : Eval Incorrect
+		funrec_1.aps  : Bien typé
+		funrec_1.aps : Eval Correct
+	Traitement du sous-répertoire exprs ...
+		abs_1.aps  : Bien typé
+		abs_1.aps : Eval Correct
+		abs_2.aps  : Bien typé
+		abs_2.aps : Eval Correct
+		and.aps  : Bien typé
+		and.aps : Eval Correct
+		app_1.aps  : Bien typé
+		app_1.aps : Eval Correct
+		or.aps  : Bien typé
+		or.aps : Eval Correct
+	Traitement du sous-répertoire prim ...
+		add.aps  : Bien typé
+		add.aps : Eval Correct
+		div.aps  : Bien typé
+		div.aps : Eval Correct
+		eq.aps  : Bien typé
+		eq.aps : Eval Correct
+		lt.aps  : Bien typé
+		lt.aps : Eval Correct
+		mul.aps  : Bien typé
+		mul.aps : Eval Correct
+		not_1.aps  : Mal typé
+		not_1.aps : Eval Correct
+		not_2.aps  : Bien typé
+		not_2.aps : Eval Correct
+		sub.aps  : Bien typé
+		sub.aps : Eval Correct

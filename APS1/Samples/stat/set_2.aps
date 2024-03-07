@@ -1,4 +1,4 @@
 [
-    CONST x int 1;
+    VAR x int;
     SET x 1
 ]
