@@ -119,17 +119,13 @@ let print_generic_value (v : value) (mem:memory)=
 
 (*! Getters for env  *)
 
-let rec get_ident_value_from_env (ident  : string) (env : environnement) (mem : memory) : value= 
+let rec get_ident_value_from_env (ident  : string) (env : environnement)  : value= 
   match env with 
   [] -> failwith "Variable not in env" 
   | (Binding (s,v)):: xs ->
-    match v with 
-    | InAddress (address) -> v
-    (* | InAddress (address) -> get_address_value_from_memory  (address) (mem) *)
-    | _ ->
-      if (compare ident s) ==  0 then v 
-      else get_ident_value_from_env ident xs mem
-
+      if (compare ident s) ==  0 then v
+      else get_ident_value_from_env ident xs 
+;;
 
 let get_int_value (v:value)=
   match v with 
@@ -141,7 +137,7 @@ let get_bool_value (v:value):bool=
   match v with 
   | (InZ(0 as n)| InZ(1 as n)) -> 
       n!=0
-  | _ -> failwith "Not an boolean value" 
+  | _ -> failwith "Not a boolean value" 
 
 
 let get_argument_ident (arg) = 
@@ -232,7 +228,14 @@ let pi_binary p v1 v2    =
 let rec eval_expr e env mem= 
   match e with 
   | ASTNum(n) -> InZ(n)
-  | ASTId(n) -> get_ident_value_from_env (n) (env) (mem)
+  | ASTId(n) -> 
+      let v = get_ident_value_from_env (n) (env) in 
+      (
+        match v with 
+      | InAddress (a) -> get_address_value_from_memory (a) (mem) 
+      | v -> v 
+      )
+ 
   | ASTif(cond,cons,alt) -> 
       if get_bool_value(eval_expr cond env mem ) == true then 
         eval_expr (cons) env mem
@@ -296,14 +299,13 @@ let rec eval_stat s env mem output=
   | ASTset (varName,e)-> 
       (*! TODO *)
       (* récupérer la valeur de l'env *)
-      let value_address = get_ident_value_from_env (varName) (env) (mem) in 
+      let value_address = get_ident_value_from_env (varName) (env) in 
       (* récupérer l'address  *)
       let address = get_memory_address_from_value(value_address) in 
       let new_value = eval_expr e env mem  in 
       let (old_value, mem') = update_address_value (mem) (address) (new_value) in 
       (mem',output)
   | ASTif (cond,b_cons,b_alt)-> 
-      (*! TODO *)
       let cond_value = eval_expr cond env mem in 
       let c  = get_bool_value(cond_value) in 
       (* Printf.printf "%b" c; *)
@@ -311,9 +313,16 @@ let rec eval_stat s env mem output=
         eval_block b_cons env mem output
       else 
         eval_block b_alt env mem output
-  | ASTwhile (cond,b)-> 
+  | ASTwhile (cond,b_while)-> 
       (*! TODO *)
-      (mem,output)
+      let cond_value = eval_expr cond env mem in 
+      let c  = get_bool_value(cond_value) in 
+      if( c == false) then 
+        (mem,output)
+      else 
+        let (mem',output') = eval_block b_while env mem output in  
+        let (mem'',output'' ) = eval_stat s env mem' output' in 
+        (mem'',output'')
   | ASTcall (name,es)-> 
       (*! TODO *)
       (mem,output)
@@ -340,7 +349,6 @@ and eval_def d env mem =
     let bind = Binding(functionName,v) in 
     let env' = (bind :: env) in 
     (env',mem)
-  (*! TODO  *)
   | ASTvar(name,t)-> 
     let (address,mem') = init_mem_value (None) (mem) in 
     let bind = Binding(name,address) in
