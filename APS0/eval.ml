@@ -157,11 +157,11 @@ let rec eval_expr e env=
       eval_expr (body_function) (env_function')
         
     | InPrim _ -> 
-      match List.length exprs with 
+      (match List.length exprs with 
       | 1 -> pi_unary ve (List.nth v_i 0)
       | 2 -> pi_binary ve (List.nth v_i 0) (List.nth v_i 1)
       | _ -> failwith "No Such arity for primary functions"
-    
+      )
 
   
 

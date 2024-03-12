@@ -38,6 +38,29 @@ type memory =  memory_element list
 and memory_element = Memory of address * value    
 
 
+let prim_to_string (p:prim) : string = 
+  match p with 
+  Add -> "Add"
+  | Sub -> "Sub"
+  | Eq -> "Eq"
+  | Lt -> "Lt"
+  | Mul -> "Mul"
+  | Div -> "Div"
+  | Not-> "Not"
+
+;;
+
+let value_to_string (v:value): string = 
+  match v with 
+  | InZ _ -> "Integer"
+  | InF (_,_,_) -> "Function"
+  | InFR (_,_,_,_) -> "Function"
+  | InPrim p -> (prim_to_string p )
+  | InAddress _ -> "Address"
+  | InP (_,_,_) -> "Procedure"
+  | InPR (_,_,_,_) -> "Procedure"
+  | None  -> "None"
+;;
 
 (*! Memory allocation *)
 let get_memory_address (a:address) = 
@@ -225,7 +248,7 @@ let pi_binary p v1 v2    =
 
 
 (*! Evaluate expression  *)
-
+(*  @returns : (value) *)
 let rec eval_expr e env mem= 
   match e with 
   | ASTNum(n) -> InZ(n)
@@ -259,10 +282,6 @@ let rec eval_expr e env mem=
     let v_i = eval_exprs exprs env mem in 
     match ve with
     | InZ (n)-> InZ(n) (* ça marche je ne sais pas pourquoi *)
-    | InAddress (_)-> failwith "Expected function but got memory" 
-    | None-> failwith "Expected function but got None" 
-    | InP _-> failwith "Expected function but got Procedure" 
-    | InPR _-> failwith "Expected function but got Procedure" 
     | InF (body_function,argz_string,env_function)-> 
       (* e1 .. en sont déjà évalué (représenter par v_i) et on a juste à rajouter dans l'enviornnment vi:valeur(ei)*)
       (* rajouter les couples (var,value) dans l'environnement de la fonction et l'évaluer dans cette environnement *)
@@ -277,10 +296,13 @@ let rec eval_expr e env mem=
       let env_function' = add_variables_to_env (argz_string_function_rec) (v_i_function_rec) (env_function) in 
       eval_expr (body_function) (env_function') (mem)
     | InPrim _ -> 
-      match List.length exprs with 
+      (match List.length exprs with 
       | 1 -> pi_unary ve (List.nth v_i 0)
       | 2 -> pi_binary ve (List.nth v_i 0) (List.nth v_i 1)
       | _ -> failwith "No Such arity for primary functions"
+      )
+    | v -> failwith ("Expected function but got "^ (value_to_string v))  
+   
     
 
   
@@ -343,7 +365,7 @@ let rec eval_stat s env mem output=
     
 
 
-
+(* @retruns : (new_env,new_mem) *)
 and eval_def d env mem = 
   match d with 
   | ASTconst(idf,t,e)-> 
