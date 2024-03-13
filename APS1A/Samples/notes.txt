@@ -1,0 +1,4 @@
+-   prim : 
+    -   not_1.aps : invalid au typage mais valide à la sémantique 
+-   defs : 
+    -   var_2.aps : valide au type mais pas valide à la sémantique (pas de valeur affecté) 

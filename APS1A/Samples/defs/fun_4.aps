@@ -1,0 +1,4 @@
+[ 
+    FUN f int [n:int] (add 1 1) ; 
+    ECHO (f 1)
+]
