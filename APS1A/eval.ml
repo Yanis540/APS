@@ -175,6 +175,18 @@ let rec get_args_in_string_list (argz) : (string list) =
       (get_arg_ident a)::(get_args_in_string_list argz')
 ;;
 
+let get_argp_ident (argp:argp) : (string) = 
+  match argp with 
+  | ArgumentP (ident,_) -> ident  
+  | ArgumentPA (ident,_) -> ident
+;;  
+let rec get_argsp_in_string_list (argzp) : (string list) = 
+  match argzp with 
+  |  [] -> []
+  |  a::argz' -> 
+      (get_argp_ident a)::(get_argsp_in_string_list argz')
+  ;;
+
 
 
 (* returns : env *)
@@ -315,8 +327,27 @@ and eval_exprs es env mem =
   | []-> [] 
   (* | [e]-> [eval_expr e env]   *)
   | e::es'-> (eval_expr e env mem)::(eval_exprs es' env mem)
-      
-(* @retrusn : (new_memory,new_output) *)
+and eval_expar x env mem : value= 
+  match x with 
+  (* Ref : (adr x ) -> inA(a) *)
+  | ASTexpAddress name ->  
+    let v = get_ident_value_from_env (name) (env) in 
+    (
+      match v with 
+      | InAddress (a) -> InAddress(a)
+      |  _ -> failwith ("Variable "^name^" is type of :  "^ (value_to_string v) ^" But expected Memory") 
+    )
+  (* Val  *)
+  | ASTexpr e ->  eval_expr e env mem      
+and eval_exprsp es env mem = 
+  match es with 
+  | [] -> []
+  | e::es' -> 
+    let e_i = eval_expar e env mem in 
+    (e_i) :: (eval_exprsp es' env mem)
+;;
+
+(* @return : (new_memory,new_output) *)
 let rec eval_stat s env mem output= 
   match s with 
   | ASTEcho e -> 
@@ -348,9 +379,9 @@ let rec eval_stat s env mem output=
         let (mem',output') = eval_block b_while env mem output in  
         let (mem'',output'' ) = eval_stat s env mem' output' in 
         (mem'',output'')
-  | ASTcall (name,exprs)-> 
+  | ASTcall (name,exprsp)-> 
       let v = get_ident_value_from_env (name) (env) in 
-      let v_i = eval_exprs exprs env mem in 
+      let v_i = eval_exprsp exprsp env mem in 
       match v with 
       | InP(body_proc,argz_string,env_proc) ->
         let env_proc' = add_variables_to_env (argz_string) (v_i) (env_proc) in 
@@ -393,13 +424,13 @@ and eval_def d env mem =
     let env' = (bind :: env) in  
     (env',mem')
   | ASTproc(name,argz,b)-> 
-    let argz_string = get_args_in_string_list (argz) in 
+    let argz_string = get_argsp_in_string_list (argz) in 
     let v= InP(b,argz_string,env) in 
     let binding = Binding(name,v) in 
     let env' =(binding::env) in 
     (env',mem)
   | ASTprocRec(name,argz,b)->
-    let argz_string = get_args_in_string_list (argz) in 
+    let argz_string = get_argsp_in_string_list (argz) in 
     let v= InPR(b,name,argz_string,env) in 
     let binding = Binding(name,v) in 
     let env' =(binding::env) in 
