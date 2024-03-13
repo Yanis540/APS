@@ -1,2 +1,8 @@
 *.cmi
 *.cmo
+parser.mli
+lexer.ml
+parser.ml
+prologTerm
+testEval
+eval
