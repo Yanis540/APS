@@ -18,6 +18,25 @@ verifier_arguments(G,[ARG|ARGS],[ARGTYPE|ARGSTYPE]) :-
 	type_expr(G,ARG,ARGTYPE),
 	verifier_arguments(G,ARGS,ARGSTYPE).
 
+
+get_type_argsp([],[]).
+get_type_argsp([(val(_),T)|ARGS],[T|RES]) :-
+	get_type_argsp(ARGS,RES).
+get_type_argsp([(var(_),T)|ARGS],[ref(T)|RES]) :-
+	get_type_argsp(ARGS,RES).
+
+
+modify_type_argsp([],[]).
+modify_type_argsp([(var(IDF),T)|ARGS],[(IDF,ref(T))|RES]) :-
+	modify_type_argsp(ARGS,RES).
+modify_type_argsp([(val(IDF),T)|ARGS],[(IDF,T)|RES]) :-
+	modify_type_argsp(ARGS,RES).
+
+verifier_argumentsp(_,[],[]).
+verifier_argumentsp(G,[ARGP|ARGSP],[ARGPTYPE|ARGSPTYPE]) :-
+	type_expar(G,ARGP,ARGPTYPE),
+	verifier_argumentsp(G,ARGSP,ARGSPTYPE).
+
 /******************************* UTILS ********************************/
 /* g0 */
 g0([
@@ -78,6 +97,20 @@ type_expr(G,or(L,R),bool):-
     type_expr(G,L,bool),
     type_expr(G,R,bool).
 
+/* exprp :  */
+type_exprp(G,E,T):-
+	type_expr(G,E,T).
+
+/******************************* EXPAR ********************************/
+/* REF */
+type_expar(G,adr(ID),ref(T)):-
+    type_expr(G,id(ID),ref(T)).
+/* VAL */
+type_expar(G,E,T):-
+    type_expr(G,E,T).
+
+
+
 /******************************* INSTRUCTIONS ********************************/
 
 
@@ -101,7 +134,7 @@ type_stat(G,while(C,B),void) :-
 /* Call */
 type_stat(G,call(X,ARGS),void) :-
     type_expr(G,X,typeFunc(ARGSTYPE,void)),
-    verifier_arguments(G,ARGS,ARGSTYPE).
+    verifier_argumentsp(G,ARGS,ARGSTYPE).
 /******************************* DEFINITIONS ********************************/
 /* const */
 type_def(G,constant(X,T,E),[(X,T)|G]):-
@@ -136,15 +169,17 @@ type_def(G,functionRec(FUNC,T,ARGUMENTS,E),GU):-
 type_def(G,var(X,T),[(X,ref(T))|G]).
 
 /* Proc */
-type_def(G,proc(PROC,ARGUMENTS,B),GU):-
-    append(ARGUMENTS,G,G_TEMP),
+type_def(G,proc(PROC,ARGSP,B),GU):-
+    modify_type_argsp(ARGSP,ARGSP_U),
+    append(ARGSP_U,G,G_TEMP),
 	type_block(G_TEMP,B,void),
-	get_type_args(ARGUMENTS,RES),
+	get_type_argsp(ARGSP,RES),
 	GU=[(PROC,typeFunc(RES,void))|G].
 /* PROC REC */ 
-type_def(G,procRec(PROC,ARGUMENTS,B),GU):-
-    get_type_args(ARGUMENTS,RES),
-	append(ARGUMENTS,G,G_TEMP), 
+type_def(G,procRec(PROC,ARGSP,B),GU):-
+    modify_type_argsp(ARGSP,ARGSP_U),
+    get_type_argsp(ARGSP,RES),
+	append(ARGSP_U,G,G_TEMP), 
     G_TEMP_TEMP =[(PROC,typeFunc(RES,T))|G_TEMP],
 	type_block(G_TEMP_TEMP,B,T),
 	GU=[(PROC,typeFunc(RES,T))|G]. 

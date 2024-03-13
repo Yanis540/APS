@@ -34,6 +34,8 @@ open Ast
 %token WHILE
 %token CALL
 %token VOID
+%token MEM
+%token ADR
 
 %type <Ast.expr> expr
 %type <Ast.expr list> exprs
@@ -44,6 +46,9 @@ open Ast
 %type <Ast.tprim> tprim
 %type <Ast.arg> arg
 %type <Ast.args> args
+%type <Ast.argp> argp
+%type <Ast.argsp> argsp
+%type <Ast.exprp> exprp
 
 %start prog
 
@@ -66,8 +71,8 @@ def :
   | FUN IDENT  typ LBRA args RBRA expr {ASTfunc($2,$3,$5,$7)}
   | FUN REC IDENT  typ LBRA args RBRA expr {ASTfuncRec($3,$4,$6,$8)}
   | VAR IDENT typ  {ASTvar($2,$3)}
-  | PROC IDENT LBRA args RBRA block {ASTproc($2,$4,$6)}
-  | PROC REC IDENT LBRA args RBRA block {ASTprocRec($3,$5,$7)}
+  | PROC IDENT LBRA argsp RBRA block {ASTproc($2,$4,$6)}
+  | PROC REC IDENT LBRA argsp RBRA block {ASTprocRec($3,$5,$7)}
   
 ; 
 
@@ -76,7 +81,7 @@ stat:
   | SET IDENT expr{ASTset($2,$3)}
   | IF expr block block{ASTif($2,$3,$4)}
   | WHILE expr block{ASTwhile($2,$3)}
-  | CALL IDENT exprs {ASTcall($2,$3)}
+  | CALL IDENT exprsp {ASTcall($2,$3)}
 ;
 
 expr:
@@ -93,6 +98,16 @@ exprs :
   expr          { [$1] }
 | expr exprs { $1 :: $2 }
 ;
+
+
+exprp : 
+  expr {ASTexpr($1)}
+| LPAR ADR IDENT RPAR {ASTexpAddress($3)}
+;
+exprsp: 
+  exprp {[$1]}
+| exprp COMMA exprsp {$1::$3}
+  
 
 // https://github.com/valeeraZ/Sorbonne_APS/blob/master/APS0/parser.mly
 // : On a utilisé les types primitive ainisi que les types de ce repo 
@@ -118,5 +133,16 @@ arg: IDENT COLON typ {Argument($1,$3)}
 args :
   arg { [$1] }
 | arg COMMA args { $1 :: $3 }
+
+;
+
+argp : 
+  IDENT COLON typ {ArgumentP($1,$3)}
+| MEM IDENT COLON typ {ArgumentPA($2,$4)}
+
+;
+argsp : 
+  argp { [$1] }
+| argp COMMA argsp { $1 :: $3 }
 
 ;

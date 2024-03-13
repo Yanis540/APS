@@ -62,6 +62,36 @@ let rec print_args (argz) =
       Printf.printf ",";
       print_args argz'
   
+let print_argp a = 
+  match a with 
+  | ArgumentP (idf,t)->
+    Printf.printf "(" ;  
+    Printf.printf "val" ;  
+    Printf.printf "(" ;  
+    Printf.printf "%s" idf ;  
+    Printf.printf ")" ;  
+    Printf.printf ",";
+    print_typ t;
+    Printf.printf ")"
+  | ArgumentPA (idf,t)->
+    Printf.printf "(" ;  
+    Printf.printf "var" ;  
+    Printf.printf "(" ;  
+    Printf.printf "%s" idf ;  
+    Printf.printf ")" ;  
+    Printf.printf ",";
+    print_typ t;
+    Printf.printf ")"
+
+
+let rec print_argsp (argz) = 
+  match argz with 
+  |  [] -> ()
+  |  [a] -> print_argp a
+  |  a::argz' -> 
+      print_argp a;
+      Printf.printf ",";
+      print_argsp argz'
 
 
 (* ! Expression  *)
@@ -120,6 +150,23 @@ and print_exprs es =
 	print_char ',';
 	print_exprs es
       )
+and print_exprp ep =
+  match ep with 
+  | ASTexpr e -> print_expr e 
+  | ASTexpAddress name -> 
+    Printf.printf "adr";
+    Printf.printf "(";
+    Printf.printf "%s" name;
+    Printf.printf ")"
+and print_exprsp eps = 
+  match eps with 
+    [] -> ()
+  | [e] -> print_exprp e
+  | e::es -> (
+      print_exprp e;
+      print_char ',';
+      print_exprsp es
+  )
 
 
 (* ! Stat  *)
@@ -158,7 +205,7 @@ and print_stat s =
       Printf.printf "id(%s)"name; 
       Printf.printf ","; 
       Printf.printf "["; 
-      print_exprs es; 
+      print_exprsp es; 
       Printf.printf "]"; 
       Printf.printf ")"
       
@@ -212,7 +259,7 @@ and  print_def d =
       Printf.printf "%s" name; 
       Printf.printf ",";  
       Printf.printf "[";        
-      print_args argz;      
+      print_argsp argz;      
       Printf.printf "]";        
       Printf.printf ",";        
       print_block b;
@@ -223,7 +270,7 @@ and  print_def d =
       Printf.printf "%s" name; 
       Printf.printf ",";  
       Printf.printf "[";        
-      print_args argz;      
+      print_argsp argz;      
       Printf.printf "]";        
       Printf.printf ",";        
       print_block b;

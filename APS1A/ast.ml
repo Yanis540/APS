@@ -19,7 +19,10 @@ and types = typ list (* multiple types a * b  *)
 and arg = 
   Argument of string * typ 
 and args = arg list
-
+and argp = 
+  ArgumentP of string * typ 
+  | ArgumentPA of string * typ 
+and argsp = argp list 
 
 and expr =
     ASTNum of int
@@ -30,14 +33,16 @@ and expr =
   | ASTor of expr * expr
   | ASTlambda of args * expr
 
-
+and exprp = 
+  ASTexpr of expr
+  | ASTexpAddress of string 
 
 and stat =
     ASTEcho of expr
     | ASTset of string * expr
     | ASTif of expr * block * block
     | ASTwhile of expr * block
-    | ASTcall of string * expr list
+    | ASTcall of string * exprp list
       
   
 and def = 
@@ -45,8 +50,8 @@ and def =
   | ASTfunc of string * typ * args *expr
   | ASTfuncRec of string * typ * args *expr
   | ASTvar of string * typ 
-  | ASTproc of string * args * block
-  | ASTprocRec of string * args * block
+  | ASTproc of string * argsp * block
+  | ASTprocRec of string * argsp * block
 
 and cmds =
   ASTStat of stat
