@@ -41,6 +41,8 @@ type_expr(_,num(N),int) :-
 /* id */
 type_expr(G,id(IDF),T):-
     parcours(IDF,G,T).
+type_expr(G,id(IDF),T):-
+    parcours(IDF,G,ref(T)).
 
 /* IF */
 type_expr(G,if(E1,E2,E3),T) :- 
@@ -85,7 +87,7 @@ type_stat(G,echo(E),void) :-
 /* SET */
 type_stat(G,set(id(VAR),E),void) :-
     /*chercher le type de VAR dans l'environnement puis vérifier */
-    type_expr(G,id(VAR),T),
+    type_expr(G,id(VAR),ref(T)),
     type_expr(G,E,T).
 /* IF */
 type_stat(G,if(E,B_CONS,B_ALT),void) :-
@@ -131,7 +133,7 @@ type_def(G,functionRec(FUNC,T,ARGUMENTS,E),GU):-
 	type_expr(G_TEMP_TEMP,E,T),
 	GU=[(FUNC,typeFunc(RES,T))|G]. 
 /* VAR : */
-type_def(G,var(X,T),[(X,T)|G]).
+type_def(G,var(X,T),[(X,ref(T))|G]).
 
 /* Proc */
 type_def(G,proc(PROC,ARGUMENTS,B),GU):-

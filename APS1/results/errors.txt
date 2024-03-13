@@ -1,2 +1,3 @@
 var_2.aps : Fatal error: exception Failure("Can't print non integer type")
 set_1.aps : Fatal error: exception Failure("Variable not in env")
+set_5.aps : Fatal error: exception Failure("Not a memory address")

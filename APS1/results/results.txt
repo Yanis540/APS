@@ -73,6 +73,8 @@ Traitement du répertoire principal : ./Samples
 		set_3.aps : Eval Correct
 		set_4.aps  : Bien typé
 		set_4.aps : Eval Correct
+		set_5.aps  : Bien typé
+		set_5.aps : Eval Incorrect
 		while_1.aps  : Bien typé
 		while_1.aps : Eval Correct
 	Traitement du sous-répertoire types ...
