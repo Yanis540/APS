@@ -57,16 +57,16 @@ let get_bool_value (v:value)=
   | _ -> failwith "Not an boolean value" 
 
 
-let get_argument_ident (arg) = 
+let get_arg_ident (arg) = 
   match arg with 
   Argument (ident,_) -> ident  
   
 
-let rec get_arguments_in_string_list (argz) : (string list) = 
+let rec get_args_in_string_list (argz) : (string list) = 
   match argz with 
   |  [] -> []
   |  a::argz' -> 
-      (get_argument_ident a)::(get_arguments_in_string_list argz')
+      (get_arg_ident a)::(get_args_in_string_list argz')
       
 
 (* let rec create_arguments_to_env (argz : string list) (values : value list) (env) : environnement =  *)
@@ -134,7 +134,7 @@ let rec eval_expr e env=
       then InZ(1) 
       else InZ(0)
   | ASTlambda(argz,e)-> 
-    let argz_string = get_arguments_in_string_list (argz) in 
+    let argz_string = get_args_in_string_list (argz) in 
     InF (e,argz_string,env)
 
   | ASTApp(expr,exprs)->
@@ -188,12 +188,12 @@ let eval_def d env =
     let bind = Binding (idf,v) in 
     bind:: env
   | ASTfunc(functionName,t,argz,e)-> 
-    let argz_string = get_arguments_in_string_list (argz) in 
+    let argz_string = get_args_in_string_list (argz) in 
     let v = InF (e, argz_string ,env) in 
     let bind = Binding(functionName,v) in 
     bind::env
   | ASTfuncRec(functionName,t,argz,e)-> 
-    let argz_string = get_arguments_in_string_list (argz) in 
+    let argz_string = get_args_in_string_list (argz) in 
     let v = InFR ( e, functionName,argz_string, env) in
     let bind = Binding(functionName,v) in 
     bind::env

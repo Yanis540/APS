@@ -163,16 +163,16 @@ let get_bool_value (v:value):bool=
   | _ -> failwith "Not a boolean value" 
 
 
-let get_argument_ident (arg) = 
+let get_arg_ident (arg) = 
   match arg with 
   Argument (ident,_) -> ident  
   
 
-let rec get_arguments_in_string_list (argz) : (string list) = 
+let rec get_args_in_string_list (argz) : (string list) = 
   match argz with 
   |  [] -> []
   |  a::argz' -> 
-      (get_argument_ident a)::(get_arguments_in_string_list argz')
+      (get_arg_ident a)::(get_args_in_string_list argz')
       
 
 (* returns : env *)
@@ -274,7 +274,7 @@ let rec eval_expr e env mem=
       then InZ(1) 
       else InZ(0)
   | ASTlambda(argz,e)-> 
-    let argz_string = get_arguments_in_string_list (argz) in 
+    let argz_string = get_args_in_string_list (argz) in 
     InF (e,argz_string,env)
 
   | ASTApp(expr,exprs)->
@@ -374,13 +374,13 @@ and eval_def d env mem =
     let env' = (bind :: env) in 
     (env',mem)
   | ASTfunc(functionName,t,argz,e)-> 
-    let argz_string = get_arguments_in_string_list (argz) in 
+    let argz_string = get_args_in_string_list (argz) in 
     let v = InF (e, argz_string ,env) in 
     let bind = Binding(functionName,v) in 
     let env' = (bind :: env) in 
     (env',mem)
   | ASTfuncRec(functionName,t,argz,e)-> 
-    let argz_string = get_arguments_in_string_list (argz) in 
+    let argz_string = get_args_in_string_list (argz) in 
     let v = InFR ( e, functionName,argz_string, env) in
     let bind = Binding(functionName,v) in 
     let env' = (bind :: env) in 
@@ -391,13 +391,13 @@ and eval_def d env mem =
     let env' = (bind :: env) in  
     (env',mem')
   | ASTproc(name,argz,b)-> 
-    let argz_string = get_arguments_in_string_list (argz) in 
+    let argz_string = get_args_in_string_list (argz) in 
     let v= InP(b,argz_string,env) in 
     let binding = Binding(name,v) in 
     let env' =(binding::env) in 
     (env',mem)
   | ASTprocRec(name,argz,b)->
-    let argz_string = get_arguments_in_string_list (argz) in 
+    let argz_string = get_args_in_string_list (argz) in 
     let v= InPR(b,name,argz_string,env) in 
     let binding = Binding(name,v) in 
     let env' =(binding::env) in 
