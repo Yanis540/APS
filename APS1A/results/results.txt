@@ -24,6 +24,8 @@ Traitement du répertoire principal : ./Samples
 		procRec_1.aps : Eval Correct
 		proc_1.aps  : Bien typé
 		proc_1.aps : Eval Correct
+		proc_2.aps  : Bien typé
+		proc_2.aps : Eval Correct
 		var_1.aps  : Bien typé
 		var_1.aps : Eval Correct
 		var_2.aps  : Bien typé
@@ -59,8 +61,14 @@ Traitement du répertoire principal : ./Samples
 	Traitement du sous-répertoire stat ...
 		callRec_1.aps  : Bien typé
 		callRec_1.aps : Eval Correct
+		callRec_2.aps  : Bien typé
+		callRec_2.aps : Eval Correct
 		call_1.aps  : Bien typé
 		call_1.aps : Eval Correct
+		call_2.aps  : Bien typé
+		call_2.aps : Eval Correct
+		call_3.aps  : Mal typé
+		call_3.aps : Eval Incorrect
 		if_1.aps  : Bien typé
 		if_1.aps : Eval Correct
 		if_2.aps  : Bien typé

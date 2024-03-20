@@ -97,9 +97,7 @@ type_expr(G,or(L,R),bool):-
     type_expr(G,L,bool),
     type_expr(G,R,bool).
 
-/* exprp :  */
-type_exprp(G,E,T):-
-	type_expr(G,E,T).
+
 
 /******************************* EXPAR ********************************/
 /* REF */

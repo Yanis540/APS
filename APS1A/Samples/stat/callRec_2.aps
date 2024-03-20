@@ -5,7 +5,7 @@
         if (eq n 0) [
             ECHO 1
         ][
-            SET n 2; 
+            SET n 0; 
             CALL f (adr n)
         ]
     ]; 
