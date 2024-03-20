@@ -100,6 +100,7 @@ expr:
 | LBRA args RBRA expr  { ASTlambda($2,$4) }
 | LPAR expr exprs RPAR  { ASTApp($2, $3) }
 | LPAR ALLOC expr RPAR  { ASTalloc($3) }
+| LPAR LEN expr RPAR  { ASTlen($3) }
 | LPAR NTH expr expr RPAR  { ASTnth($3,$4) }
 | LPAR VSET expr expr expr RPAR  { ASTvset($3,$4,$5) }
 ;

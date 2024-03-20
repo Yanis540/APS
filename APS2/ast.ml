@@ -50,7 +50,6 @@ and stat =
     | ASTif of expr * block * block
     | ASTwhile of expr * block
     | ASTcall of string * exprp list
-    | ASTsetVec of lval * expr
       
   
 and def = 

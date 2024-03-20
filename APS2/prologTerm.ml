@@ -151,6 +151,30 @@ let rec print_expr e =
         print_expr e ;
         Printf.printf ")"  
       )
+    | ASTlen(l) -> (
+        Printf.printf "len"; 
+        Printf.printf "("; 
+        print_expr l ;
+        Printf.printf ")"  
+      )
+    | ASTnth(l,n) -> (
+        Printf.printf "nth"; 
+        Printf.printf "("; 
+        print_expr l ;
+        Printf.printf ","; 
+        print_expr n ;
+        Printf.printf ")"  
+      )
+    | ASTvset(l,e1,e2) -> (
+        Printf.printf "vset"; 
+        Printf.printf "("; 
+        print_expr l ;
+        Printf.printf ","; 
+        print_expr e1 ;
+        Printf.printf ","; 
+        print_expr e2 ;
+        Printf.printf ")"  
+      )
 
 and print_exprs es =
   match es with
