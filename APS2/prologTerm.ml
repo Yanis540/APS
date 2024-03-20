@@ -31,6 +31,11 @@ let rec print_typ t =
       Printf.printf ",";
       print_typ t;
       Printf.printf ")" 
+  | TypeVec (t)-> 
+      Printf.printf "vector";
+      Printf.printf "(";
+      print_typ t;
+      Printf.printf ")" 
 
 and print_types ts = 
   match ts with 
@@ -140,6 +145,12 @@ let rec print_expr e =
         print_expr e ;
         Printf.printf ")"  
       )
+    | ASTalloc(e) -> (
+        Printf.printf "alloc"; 
+        Printf.printf "("; 
+        print_expr e ;
+        Printf.printf ")"  
+      )
 
 and print_exprs es =
   match es with
@@ -177,9 +188,9 @@ and print_stat s =
       Printf.printf("echo(");
       print_expr(e);
       Printf.printf(")")
-  | ASTset (var,e)-> 
+  | ASTset (l,e)-> 
       Printf.printf("set(");
-      Printf.printf"id(%s)" var; 
+      print_lval l;
       Printf.printf",";
       print_expr e;  
       Printf.printf")"
@@ -208,7 +219,17 @@ and print_stat s =
       print_exprsp es; 
       Printf.printf "]"; 
       Printf.printf ")"
-      
+
+and print_lval l= 
+  match l with 
+  |  ASTlvalId(var) -> Printf.printf"id(%s)" var
+  |  ASTlval(l',e) -> 
+      Printf.printf "nth";
+      Printf.printf "(";
+      print_lval l' ; 
+      Printf.printf ",";
+      print_expr e; 
+      Printf.printf ")"
 and  print_def d = 
   match d with 
     ASTconst (idf,t,e)->

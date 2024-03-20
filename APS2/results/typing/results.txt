@@ -1,0 +1,49 @@
+##########################################################
+Traitement du répertoire principal : ./Samples
+	Traitement du sous-répertoire cmds ...
+		cmds_1.aps  : Bien typé
+	Traitement du sous-répertoire defs ...
+		const_1.aps  : Bien typé
+		const_2.aps  : Bien typé
+		const_3.aps  : Bien typé
+		fun_1.aps  : Bien typé
+		fun_2.aps  : Bien typé
+		fun_3.aps  : Bien typé
+		fun_4.aps  : Bien typé
+		funrec_1.aps  : Bien typé
+		procRec_1.aps  : Bien typé
+		proc_1.aps  : Bien typé
+		proc_2.aps  : Bien typé
+		var_1.aps  : Bien typé
+		var_2.aps  : Bien typé
+	Traitement du sous-répertoire exprs ...
+		abs_1.aps  : Bien typé
+		abs_2.aps  : Bien typé
+		and.aps  : Bien typé
+		app_1.aps  : Bien typé
+		or.aps  : Bien typé
+	Traitement du sous-répertoire prim ...
+		add.aps  : Bien typé
+		div.aps  : Bien typé
+		eq.aps  : Bien typé
+		lt.aps  : Bien typé
+		mul.aps  : Bien typé
+		not_1.aps  : Mal typé
+		not_2.aps  : Bien typé
+		sub.aps  : Bien typé
+	Traitement du sous-répertoire stat ...
+		callRec_1.aps  : Bien typé
+		callRec_2.aps  : Bien typé
+		call_1.aps  : Bien typé
+		call_2.aps  : Bien typé
+		call_3.aps  : Mal typé
+		if_1.aps  : Bien typé
+		if_2.aps  : Bien typé
+		set_1.aps  : Mal typé
+		set_2.aps  : Bien typé
+		set_3.aps  : Mal typé
+		set_4.aps  : Bien typé
+		set_5.aps  : Mal typé
+		while_1.aps  : Bien typé
+	Traitement du sous-répertoire types ...
+		void_1.aps  : Bien typé

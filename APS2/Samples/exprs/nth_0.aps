@@ -1,0 +1,4 @@
+[
+    VAR x (vec int);
+    SET (nth x 2) 2 
+]

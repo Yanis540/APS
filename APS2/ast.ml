@@ -14,7 +14,10 @@
 *)
 type tprim = Int | Bool | Void
 
-type typ = Type of tprim | TypeFunc of types * typ (*ARROW*)
+type typ = 
+  Type of tprim 
+  | TypeFunc of types * typ (*ARROW*)
+  | TypeVec of typ
 and types = typ list (* multiple types a * b  *)
 and arg = 
   Argument of string * typ 
@@ -32,6 +35,10 @@ and expr =
   | ASTand of expr * expr
   | ASTor of expr * expr
   | ASTlambda of args * expr
+  | ASTalloc of expr
+  | ASTlen of expr
+  | ASTnth of expr *expr
+  | ASTvset of expr * expr * expr
 
 and exprp = 
   ASTexpr of expr
@@ -39,10 +46,11 @@ and exprp =
 
 and stat =
     ASTEcho of expr
-    | ASTset of string * expr
+    | ASTset of lval * expr
     | ASTif of expr * block * block
     | ASTwhile of expr * block
     | ASTcall of string * exprp list
+    | ASTsetVec of lval * expr
       
   
 and def = 
@@ -60,5 +68,8 @@ and cmds =
 and block = 
   ASTblock of cmds 
 
+and lval = 
+  ASTlvalId of string 
+  | ASTlval of lval * expr 
 
 

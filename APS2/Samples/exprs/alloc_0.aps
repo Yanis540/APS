@@ -1,0 +1,4 @@
+[
+    VAR x (vec int);
+    SET x (alloc 2) 
+]

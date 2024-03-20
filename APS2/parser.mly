@@ -8,6 +8,7 @@
 (* == Fichier: parser.mly                                                  == *)
 (* == Analyse syntaxique                                                   == *)
 (* ========================================================================== *)
+(* lval est soit une variable, ou un n-ieme element d'un tableau *)
 
 open Ast
 
@@ -36,6 +37,7 @@ open Ast
 %token VOID
 %token MEM
 %token ADR
+%token ALLOC LEN NTH VSET VEC
 
 %type <Ast.expr> expr
 %type <Ast.expr list> exprs
@@ -49,6 +51,7 @@ open Ast
 %type <Ast.argp> argp
 %type <Ast.argsp> argsp
 %type <Ast.exprp> exprp
+%type <Ast.lval> lval
 
 %start prog
 
@@ -78,10 +81,14 @@ def :
 
 stat:
   ECHO expr             { ASTEcho($2) }
-  | SET IDENT expr{ASTset($2,$3)}
   | IF expr block block{ASTif($2,$3,$4)}
   | WHILE expr block{ASTwhile($2,$3)}
   | CALL IDENT exprsp {ASTcall($2,$3)}
+  | SET lval expr {ASTset($2,$3)}
+;
+lval : 
+  IDENT {ASTlvalId($1)} 
+| LPAR NTH lval expr RPAR {ASTlval($3,$4)}
 ;
 
 expr:
@@ -92,6 +99,9 @@ expr:
 | LPAR OR expr expr RPAR { ASTor($3,$4) }
 | LBRA args RBRA expr  { ASTlambda($2,$4) }
 | LPAR expr exprs RPAR  { ASTApp($2, $3) }
+| LPAR ALLOC expr RPAR  { ASTalloc($3) }
+| LPAR NTH expr expr RPAR  { ASTnth($3,$4) }
+| LPAR VSET expr expr expr RPAR  { ASTvset($3,$4,$5) }
 ;
 
 exprs :  
@@ -121,6 +131,7 @@ tprim:
 typ:
   tprim                     { Type($1) }
 | LPAR types ARROW typ RPAR { TypeFunc($2,$4) }
+| LPAR VEC typ RPAR { TypeVec($3) }
 ;
 
 types:
