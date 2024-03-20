@@ -109,6 +109,11 @@ type_expr(G,alloc(E),vector(_)):-
 type_expr(G,nth(L,N),T):-
     type_expr(G,L,vector(T)),  
     type_expr(G,N,int).  
+/*
+    LEN 
+*/ 
+type_expr(G,len(L),int):-
+    type_expr(G,L,vector(_)).
 
 
 
