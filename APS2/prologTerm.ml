@@ -32,7 +32,7 @@ let rec print_typ t =
       print_typ t;
       Printf.printf ")" 
   | TypeVec (t)-> 
-      Printf.printf "vector";
+      Printf.printf "vec";
       Printf.printf "(";
       print_typ t;
       Printf.printf ")" 

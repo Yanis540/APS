@@ -101,19 +101,26 @@ type_expr(G,or(L,R),bool):-
 /*
     alloc 
 */ 
-type_expr(G,alloc(E),vector(_)):-
+type_expr(G,alloc(E),vec(_)):-
     type_expr(G,E,int).    
 /*
     NTH 
 */ 
 type_expr(G,nth(L,N),T):-
-    type_expr(G,L,vector(T)),  
+    type_expr(G,L,vec(T)),  
     type_expr(G,N,int).  
 /*
     LEN 
 */ 
 type_expr(G,len(L),int):-
-    type_expr(G,L,vector(_)).
+    type_expr(G,L,vec(_)).
+/*
+    VSET 
+*/ 
+type_expr(G,vset(L,E1,E2),vec(T)):-
+    type_expr(G,L,vec(T)),
+    type_expr(G,E1,int),
+    type_expr(G,E2,T).
 
 
 
