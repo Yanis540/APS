@@ -134,6 +134,19 @@ type_expar(G,E,T):-
 
 
 
+/******************************* LVAL ********************************/
+/*
+    LVAR
+*/
+type_lval(G,id(X),T):-
+    type_expr(G,id(X),ref(T)).
+/*
+    LNTH
+*/
+type_lval(G,nth(E1,E2),T):-
+    type_expr(G,E1,vec(T)),
+    type_expr(G,E2,int).
+
 /******************************* INSTRUCTIONS ********************************/
 
 
@@ -143,7 +156,7 @@ type_stat(G,echo(E),void) :-
 /* SET */
 type_stat(G,set(LV,E),void) :-
     /*chercher le type de VAR dans l'environnement puis vérifier */
-    type_expr(G,LV,T),
+    type_lval(G,LV,T),
     type_expr(G,E,T).
 /* IF */
 type_stat(G,if(E,B_CONS,B_ALT),void) :-

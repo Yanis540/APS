@@ -1,0 +1,4 @@
+[
+    CONST x (vec int) (alloc 2);
+    SET (nth x 1) 2
+]

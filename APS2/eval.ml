@@ -23,6 +23,7 @@ type prim =
 type environnement = binding list 
 and binding = Binding of  string * value
 and address = InA of int
+and bloc = InB of address * int 
 and value = 
   InZ of int 
   | InF of expr * string list * environnement 
@@ -31,6 +32,7 @@ and value =
   | InAddress of address
   | InP of block * string list * environnement
   | InPR of block * string *  string list * environnement
+  | InBloc of bloc 
   | None  
 ;;
 
@@ -94,6 +96,26 @@ let alloc (mem:memory) =
   memRef := !memRef +1; 
   allocation
 ;;
+
+(* allocn(σ,n) = (a, σ′) *)
+let allocn (mem:memory)(n:int)  = 
+  match n<=0 with 
+  | True -> failwith "Allocate functions expectes only positif numbers"
+  | _ -> 
+    let a = InA(!memRef) in 
+    let rec  allocate_multiple_to_memory mem n = 
+      match n with 
+      | 0 -> mem
+      | _ ->
+        let mem' = (InA(!memRef),(Memory(InA(!memRef),None)::mem)) in 
+          memRef := !memRef +1; 
+        allocate_multiple_to_memory (mem')
+    in
+    let mem' =  allocate_multiple_to_memory (mem) (n) in 
+    (a,mem')
+;;
+
+
 
 (* returns : (old_value,new_memory) *)
 let update_address_value (mem:memory) (address:address) (v:value) = 
