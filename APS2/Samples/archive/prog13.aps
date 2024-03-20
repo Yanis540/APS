@@ -1,0 +1,3 @@
+[
+    FUN f (int->int) [x:int][y:int] (add x y) 
+    ; ECHO 3  ]

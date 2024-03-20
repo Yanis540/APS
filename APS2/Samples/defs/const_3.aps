@@ -1,0 +1,1 @@
+[ CONST x (int*int->int) [x:int,y:int] (add x y) ; ECHO (x 1 2)]

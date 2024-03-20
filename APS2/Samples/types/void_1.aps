@@ -1,0 +1,4 @@
+[
+    FUN x void [y : (int->void) , a:int] (y a) ; 
+    ECHO 1
+]

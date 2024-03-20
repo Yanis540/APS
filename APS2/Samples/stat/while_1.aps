@@ -1,0 +1,5 @@
+[
+    VAR x int ; 
+    SET x 0;
+    WHILE (lt x 3) [ SET x (add x 1); ECHO x ]
+]

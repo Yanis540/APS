@@ -1,0 +1,6 @@
+[
+    PROC x [var n:int] [
+        SET n 1 
+    ];
+    ECHO 1
+]

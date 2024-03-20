@@ -1,0 +1,4 @@
+[ 
+    FUN f int [x:int,y:int] (add x y) ; 
+    ECHO (f 1 2) 
+]

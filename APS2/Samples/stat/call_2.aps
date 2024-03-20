@@ -1,0 +1,10 @@
+[
+    VAR y int ;  
+    SET y 1 ;  
+    PROC x [var z:int] [
+        ECHO z; 
+        SET z 2 
+    ]; 
+    CALL x (adr y);
+    ECHO y
+]
