@@ -98,6 +98,13 @@ type_expr(G,or(L,R),bool):-
     type_expr(G,R,bool).
 
 
+/*
+    alloc 
+*/ 
+type_expr(G,alloc(E),vector(_)):-
+    type_expr(G,E,int).    
+
+
 
 /******************************* EXPAR ********************************/
 /* REF */
