@@ -103,6 +103,12 @@ type_expr(G,or(L,R),bool):-
 */ 
 type_expr(G,alloc(E),vector(_)):-
     type_expr(G,E,int).    
+/*
+    NTH 
+*/ 
+type_expr(G,nth(L,N),T):-
+    type_expr(G,L,vector(T)),  
+    type_expr(G,N,int).  
 
 
 

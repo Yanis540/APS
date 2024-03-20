@@ -1,4 +1,5 @@
 [
-    VAR x (vec int);
-    SET (nth x 2) 2 
+    CONST x (vec int) (alloc 2);
+    CONST y int (nth x 1);
+    ECHO 1
 ]
