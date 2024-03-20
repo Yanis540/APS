@@ -141,9 +141,9 @@ type_expar(G,E,T):-
 type_stat(G,echo(E),void) :-
 	type_expr(G,E,int).
 /* SET */
-type_stat(G,set(id(VAR),E),void) :-
+type_stat(G,set(LV,E),void) :-
     /*chercher le type de VAR dans l'environnement puis vérifier */
-    type_expr(G,id(VAR),ref(T)),
+    type_expr(G,LV,T),
     type_expr(G,E,T).
 /* IF */
 type_stat(G,if(E,B_CONS,B_ALT),void) :-
