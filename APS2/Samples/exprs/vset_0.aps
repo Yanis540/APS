@@ -1,5 +1,6 @@
 [
     CONST x (vec int) (alloc 2);
     CONST y (vec int) (vset x 1 3);
-    ECHO 1
+    CONST z int (nth x 1);
+    ECHO z
 ]

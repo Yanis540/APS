@@ -389,10 +389,28 @@ let rec eval_expr (e:expr) (env:environnement) (mem:memory) : (value)*(memory)=
             if (i < 0 || i >= n) then failwith "Index out of bound" 
             else 
               let a_value =  get_memory_address (a) in 
-                let a' = InA(a_value + i) in 
-                let nth_value = get_address_value_from_memory a' mem'' in
-                (nth_value, mem'')
+              let a' = InA(a_value + i) in 
+              let nth_value = get_address_value_from_memory (a') (mem'') in
+              (nth_value, mem'')
         | _ -> failwith ("Nth Expects integer value but got " ^ (value_to_string v2))) 
+    | _ -> failwith ("Expected bloc but got " ^ (value_to_string v1)))
+    
+  | ASTvset (e1, e2,e3) -> 
+    let (v1, mem') = eval_expr e1 env mem in
+    let (v2, mem'') = eval_expr e2 env mem' in
+    let (v, mem''') = eval_expr e3 env mem'' in
+    (match v1 with 
+    | InBloc(b) -> 
+        (match v2 with 
+        | InZ(i) -> 
+            let (a, n) = get_bloc_address_and_size v1 in
+            if (i < 0 || i >= n) then failwith "Vset Index out of bound" 
+            else 
+              let a_value =  get_memory_address (a) in 
+              let a' = InA(a_value + i) in 
+              let (_,mem'''')= update_address_value (mem''') (a') (v) in 
+              (v1, mem'''')
+        | _ -> failwith ("Vset Expects integer value but got " ^ (value_to_string v2))) 
     | _ -> failwith ("Expected bloc but got " ^ (value_to_string v1)))
     
 
