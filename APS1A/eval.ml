@@ -263,7 +263,7 @@ let pi_binary p v1 v2    =
 
 (*! Evaluate expression  *)
 (*  @returns : (value) *)
-let rec eval_expr e env mem= 
+let rec eval_expr (e:expr) (env:environnement) (mem:memory) : value= 
   match e with 
   | ASTNum(n) -> InZ(n)
   | ASTId(n) -> 
@@ -294,6 +294,7 @@ let rec eval_expr e env mem=
   | ASTApp(expr,exprs)->
     let ve:value = eval_expr expr env mem in 
     let v_i = eval_exprs exprs env mem in 
+    (
     match ve with
     | InZ (n)-> InZ(n) (* ça marche je ne sais pas pourquoi *)
     | InF (body_function,argz_string,env_function)-> 
@@ -316,6 +317,7 @@ let rec eval_expr e env mem=
       | _ -> failwith "No Such arity for primary functions"
       )
     | v -> failwith ("Expected function but got "^ (value_to_string v))  
+    )
    
     
 
