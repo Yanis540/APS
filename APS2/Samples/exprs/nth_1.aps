@@ -1,0 +1,5 @@
+[
+    CONST x (vec int) (alloc 2);
+    CONST y int (nth x 2);
+    ECHO 1
+]
