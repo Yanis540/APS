@@ -36,7 +36,7 @@ Traitement du répertoire principal : ./Samples
 		abs_2.aps  : Bien typé
 		abs_2.aps : Eval Correct
 		alloc_0.aps  : Bien typé
-		alloc_0.aps : Eval Incorrect
+		alloc_0.aps : Eval Correct
 		and.aps  : Bien typé
 		and.aps : Eval Correct
 		app_1.aps  : Bien typé

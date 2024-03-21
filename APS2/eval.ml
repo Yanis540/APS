@@ -62,6 +62,7 @@ let value_to_string (v:value): string =
   | InP (_,_,_) -> "Procedure"
   | InPR (_,_,_,_) -> "Procedure"
   | None  -> "None"
+  | InBloc (_)  -> "Bloc"
 ;;
 
 (*! Memory allocation *)
@@ -162,6 +163,17 @@ let print_generic_value (v : value) (mem:memory)=
   | _ -> print_value v
 ;;
 
+
+(*!  Bloc  *)
+let get_bloc_address_and_size (v:value)  : (address*int)= 
+  match v with 
+  | InBloc (b) -> 
+    (match b with 
+    | InB(a,n) -> (a,n) 
+    )
+  | _ -> failwith ("Expected Bloc but got "^ (value_to_string v)) 
+
+;;
 (*! Getters for env  *)
 
 let rec get_ident_value_from_env (ident  : string) (env : environnement)  : value= 
@@ -346,8 +358,20 @@ let rec eval_expr (e:expr) (env:environnement) (mem:memory) : (value)*(memory)=
     | v -> failwith ("Expected function but got "^ (value_to_string v))  
     )
   (*! TODO *)
-  (* | ASTalloc (e) -> 
-    let v = eval_expr (e) (env) (mem) in  *)
+  | ASTalloc (e) -> 
+    let (v,mem') = eval_expr (e) (env) (mem) in
+    (
+      match v with 
+      | InZ(n) -> 
+          let (a,mem'') = allocn (mem') (n) in
+          let bloc = InB(a,n) in 
+          let v' = InBloc(bloc) in 
+          (v',mem'')
+      | _ -> failwith ("Expected function but got "^ (value_to_string v)) 
+    ) 
+    
+
+
 
     
 
