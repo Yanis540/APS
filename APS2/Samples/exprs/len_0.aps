@@ -1,5 +1,5 @@
 [
     CONST x (vec int) (alloc 2);
     CONST y int (len x);
-    ECHO 1
+    ECHO y
 ]

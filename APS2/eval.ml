@@ -357,7 +357,6 @@ let rec eval_expr (e:expr) (env:environnement) (mem:memory) : (value)*(memory)=
       )
     | v -> failwith ("Expected function but got "^ (value_to_string v))  
     )
-  (*! TODO *)
   | ASTalloc (e) -> 
     let (v,mem') = eval_expr (e) (env) (mem) in
     (
@@ -368,6 +367,17 @@ let rec eval_expr (e:expr) (env:environnement) (mem:memory) : (value)*(memory)=
           let v' = InBloc(bloc) in 
           (v',mem'')
       | _ -> failwith ("Expected function but got "^ (value_to_string v)) 
+    ) 
+  (*! TODO *)
+  | ASTlen (e) -> 
+    let (v,mem') = eval_expr (e) (env) (mem) in
+    (
+      match v with 
+      | InBloc(b) -> 
+          let (a,n) = get_bloc_address_and_size(v) in
+          let inzN = InZ(n) in  
+          (inzN,mem')
+      | _ -> failwith ("Expected bloc but got "^ (value_to_string v)) 
     ) 
     
 
@@ -477,7 +487,7 @@ and eval_def d env mem =
     let (v,mem') = eval_expr e env mem in 
     let bind = Binding (idf,v) in 
     let env' = (bind :: env) in 
-    (env',mem)
+    (env',mem')
   | ASTfunc(functionName,t,argz,e)-> 
     let argz_string = get_args_in_string_list (argz) in 
     let v = InF (e, argz_string ,env) in 
