@@ -35,12 +35,20 @@ Traitement du répertoire principal : ./Samples
 		abs_1.aps : Eval Correct
 		abs_2.aps  : Bien typé
 		abs_2.aps : Eval Correct
+		alloc_0.aps  : Bien typé
+		alloc_0.aps : Eval Incorrect
 		and.aps  : Bien typé
 		and.aps : Eval Correct
 		app_1.aps  : Bien typé
 		app_1.aps : Eval Correct
+		len_0.aps  : Bien typé
+		len_0.aps : Eval Incorrect
+		nth_0.aps  : Bien typé
+		nth_0.aps : Eval Incorrect
 		or.aps  : Bien typé
 		or.aps : Eval Correct
+		vset_0.aps  : Bien typé
+		vset_0.aps : Eval Incorrect
 	Traitement du sous-répertoire prim ...
 		add.aps  : Bien typé
 		add.aps : Eval Correct
@@ -83,8 +91,12 @@ Traitement du répertoire principal : ./Samples
 		set_4.aps : Eval Correct
 		set_5.aps  : Mal typé
 		set_5.aps : Eval Incorrect
+		set_6.aps  : Bien typé
+		set_6.aps : Eval Incorrect
 		while_1.aps  : Bien typé
 		while_1.aps : Eval Correct
 	Traitement du sous-répertoire types ...
+		vec_0.aps  : Bien typé
+		vec_0.aps : Eval Correct
 		void_1.aps  : Bien typé
 		void_1.aps : Eval Correct

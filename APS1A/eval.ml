@@ -341,12 +341,12 @@ and eval_expar x env mem : value=
     )
   (* Val  *)
   | ASTexpr e ->  eval_expr e env mem      
-and eval_exprsp es env mem = 
+and eval_exprps es env mem = 
   match es with 
   | [] -> []
   | e::es' -> 
     let e_i = eval_expar e env mem in 
-    (e_i) :: (eval_exprsp es' env mem)
+    (e_i) :: (eval_exprps es' env mem)
 ;;
 
 (* @return : (new_memory,new_output) *)
@@ -383,7 +383,7 @@ let rec eval_stat s env mem output=
         (mem'',output'')
   | ASTcall (name,exprsp)-> 
       let v = get_ident_value_from_env (name) (env) in 
-      let v_i = eval_exprsp exprsp env mem in 
+      let v_i = eval_exprps exprsp env mem in 
       match v with 
       | InP(body_proc,argz_string,env_proc) ->
         let env_proc' = add_variables_to_env (argz_string) (v_i) (env_proc) in 

@@ -100,16 +100,16 @@ let alloc (mem:memory) =
 (* allocn(σ,n) = (a, σ′) *)
 let allocn (mem:memory)(n:int)  = 
   match n<=0 with 
-  | True -> failwith "Allocate functions expectes only positif numbers"
+  | true -> failwith "Allocate functions expectes only positif numbers"
   | _ -> 
     let a = InA(!memRef) in 
     let rec  allocate_multiple_to_memory mem n = 
       match n with 
       | 0 -> mem
       | _ ->
-        let mem' = (InA(!memRef),(Memory(InA(!memRef),None)::mem)) in 
+        let (_,mem') = (InA(!memRef),(Memory(InA(!memRef),None)::mem)) in 
           memRef := !memRef +1; 
-        allocate_multiple_to_memory (mem')
+        allocate_multiple_to_memory (mem') (n-1)
     in
     let mem' =  allocate_multiple_to_memory (mem) (n) in 
     (a,mem')
@@ -285,44 +285,50 @@ let pi_binary p v1 v2    =
 
 (*! Evaluate expression  *)
 (*  @returns : (value) *)
-let rec eval_expr e env mem= 
+let rec eval_expr (e:expr) (env:environnement) (mem:memory) : (value)*(memory)= 
   match e with 
-  | ASTNum(n) -> InZ(n)
+  | ASTNum(n) -> (InZ(n),mem)
   | ASTId(n) -> 
       let v = get_ident_value_from_env (n) (env) in 
       (
         match v with 
-        | InAddress (a) -> get_address_value_from_memory (a) (mem) 
-        | v -> v 
+        | InAddress (a) -> (get_address_value_from_memory (a) (mem),mem) 
+        | v -> (v,mem)  
       )
  
-  | ASTif(cond,cons,alt) -> 
-      if get_bool_value(eval_expr cond env mem ) == true then 
-        eval_expr (cons) env mem
+  | ASTif(cond,cons,alt) ->
+      let (c,mem') = eval_expr cond env mem in   
+      if( get_bool_value(c) == true ) then 
+        eval_expr (cons) env mem'
       else
-        eval_expr (alt) env mem
+        eval_expr (alt) env mem'
   | ASTand(e1,e2) -> 
-      if (get_bool_value(eval_expr e1 env mem) && get_bool_value(eval_expr e2 env mem)) == true 
-      then InZ(1) 
-      else InZ(0)
+      let (left,mem') =eval_expr e1 env mem in 
+      let (right,mem'') =eval_expr e2 env mem' in 
+      if ((get_bool_value(left)) == true) 
+      then (right,mem'') 
+      else (InZ(0),mem')
   | ASTor(e1,e2) -> 
-      if(get_bool_value(eval_expr e1 env mem) ||  get_bool_value(eval_expr e2 env mem))== true 
-      then InZ(1) 
-      else InZ(0)
+    let (left,mem') =eval_expr e1 env mem in 
+    let (right,mem'') =eval_expr e2 env mem' in  
+      if(get_bool_value(left))== true 
+      then (InZ(1),mem') 
+      else (right,mem'')
   | ASTlambda(argz,e)-> 
     let argz_string = get_args_in_string_list (argz) in 
-    InF (e,argz_string,env)
+    (InF (e,argz_string,env),mem)
 
   | ASTApp(expr,exprs)->
-    let ve:value = eval_expr expr env mem in 
-    let v_i = eval_exprs exprs env mem in 
+    let (ve,mem') : (value*memory) = eval_expr expr env mem in 
+    let (v_i,_) = eval_exprs exprs env mem in 
+    (
     match ve with
-    | InZ (n)-> InZ(n) (* ça marche je ne sais pas pourquoi *)
+    | InZ (n)-> (InZ(n),mem') (* ça marche je ne sais pas pourquoi *)
     | InF (body_function,argz_string,env_function)-> 
       (* e1 .. en sont déjà évalué (représenter par v_i) et on a juste à rajouter dans l'enviornnment vi:valeur(ei)*)
       (* rajouter les couples (var,value) dans l'environnement de la fonction et l'évaluer dans cette environnement *)
       let env_function' = add_variables_to_env (argz_string) (v_i) (env_function) in 
-      eval_expr (body_function) (env_function') (mem)
+      eval_expr (body_function) (env_function') (mem')
     | InFR (body_function,functionName,argz_string,env_function)-> 
       (* rajouter les couples (var,value) dans l'environnement de la fonction et l'évaluer dans cette environnement *)
       (* puis rajouter la définition de la fonction pour permettre les accès récusrif dans le body *)
@@ -330,91 +336,111 @@ let rec eval_expr e env mem=
       let argz_string_function_rec = functionName::argz_string in 
       let v_i_function_rec = rec_func_def::v_i in 
       let env_function' = add_variables_to_env (argz_string_function_rec) (v_i_function_rec) (env_function) in 
-      eval_expr (body_function) (env_function') (mem)
+      eval_expr (body_function) (env_function') (mem')
     | InPrim _ -> 
       (match List.length exprs with 
-      | 1 -> pi_unary ve (List.nth v_i 0)
-      | 2 -> pi_binary ve (List.nth v_i 0) (List.nth v_i 1)
+      | 1 -> (pi_unary ve (List.nth v_i 0),mem')
+      | 2 -> (pi_binary ve (List.nth v_i 0) (List.nth v_i 1),mem')
       | _ -> failwith "No Such arity for primary functions"
       )
     | v -> failwith ("Expected function but got "^ (value_to_string v))  
-   
+    )
+  (*! TODO *)
+  (* | ASTalloc (e) -> 
+    let v = eval_expr (e) (env) (mem) in  *)
+
     
 
   
 
 
-and eval_exprs es env mem = 
+and eval_exprs (es:expr list) (env:environnement) (mem:memory) : (value list * memory)  = 
   match es with  
-  | []-> [] 
+  | []-> ([],mem) 
   (* | [e]-> [eval_expr e env]   *)
-  | e::es'-> (eval_expr e env mem)::(eval_exprs es' env mem)
-and eval_expar x env mem : value= 
+  | e::es'-> 
+    let (v,mem')=(eval_expr e env mem) in 
+    let (values,mem'')= (eval_exprs es' env mem') in 
+    (v::values,mem'') 
+and eval_expar (x:exprp) (env:environnement) (mem:memory) : (value*memory)= 
   match x with 
   (* Ref : (adr x ) -> inA(a) *)
   | ASTexpAddress name ->  
     let v = get_ident_value_from_env (name) (env) in 
     (
       match v with 
-      | InAddress (a) -> InAddress(a)
+      | InAddress (a) -> (InAddress(a),mem)
       |  _ -> failwith ("Variable "^name^" is type of :  "^ (value_to_string v) ^" But expected Memory") 
     )
   (* Val  *)
-  | ASTexpr e ->  eval_expr e env mem      
-and eval_exprsp es env mem = 
+  | ASTexpr e ->  
+      let (v,mem') = eval_expr e env mem in 
+      (v,mem')      
+and eval_exprps (es:exprp list) (env:environnement) (mem:memory) : (value list*memory)  = 
   match es with 
-  | [] -> []
+  | [] -> ([],mem)
   | e::es' -> 
-    let e_i = eval_expar e env mem in 
-    (e_i) :: (eval_exprsp es' env mem)
+    let (e_i,mem') = eval_expar e env mem in 
+    let (e_is,mem'')=(eval_exprps es' env mem') in 
+    let e_is' = (e_i) :: e_is in 
+    (e_is',mem'')
+    
+
+    
 ;;
 
 (* @return : (new_memory,new_output) *)
 let rec eval_stat s env mem output= 
   match s with 
   | ASTEcho e -> 
-      (mem,(eval_expr e env mem )::output)
-  | ASTset (varName,e)-> 
-      (*! TODO *)
-      (* récupérer la valeur de l'env *)
-      let value_address = get_ident_value_from_env (varName) (env) in 
-      (* récupérer l'address  *)
-      let address = get_memory_address_from_value(value_address) in 
-      let new_value = eval_expr e env mem  in 
-      let (old_value, mem') = update_address_value (mem) (address) (new_value) in 
-      (mem',output)
+      let (v,mem')= eval_expr e env mem in 
+      (mem',v::output)
+  | ASTset (l,e)-> 
+      (
+        match l with 
+        | ASTlvalId varName -> 
+          let value_address = get_ident_value_from_env (varName) (env) in 
+          (* récupérer l'address  *)
+          let address = get_memory_address_from_value(value_address) in 
+          let (new_value,mem') = eval_expr e env mem  in 
+          let (old_value, mem'') = update_address_value (mem') (address) (new_value) in 
+          (mem'',output)
+        (*! TODO *)
+        | ASTlval (lval,pos)-> failwith "TODO"
+      )
+    
   | ASTif (cond,b_cons,b_alt)-> 
-      let cond_value = eval_expr cond env mem in 
+      let (cond_value,mem') = eval_expr cond env mem in 
       let c  = get_bool_value(cond_value) in 
       if( c == true) then 
-        let (mem',output')= eval_block b_cons env mem output in 
-        (mem',output')
+        let (mem'',output')= eval_block b_cons env (mem') output in 
+        (mem'',output')
       else 
-        let (mem',output')=eval_block b_alt env mem output in 
-        (mem',output')
+        let (mem'',output')=eval_block b_alt env (mem') output in 
+        (mem'',output')
   | ASTwhile (cond,b_while)-> 
-      let cond_value = eval_expr cond env mem in 
+      let (cond_value,mem') = eval_expr cond env mem in 
       let c  = get_bool_value(cond_value) in 
       if( c == false) then 
-        (mem,output)
+        (mem',output)
       else 
-        let (mem',output') = eval_block b_while env mem output in  
-        let (mem'',output'' ) = eval_stat s env mem' output' in 
-        (mem'',output'')
+        let (mem'',output') = eval_block b_while env (mem') output in  
+        let (mem''',output'' ) = eval_stat s env (mem'') output' in 
+        (mem''',output'')
   | ASTcall (name,exprsp)-> 
       let v = get_ident_value_from_env (name) (env) in 
-      let v_i = eval_exprsp exprsp env mem in 
+      let (v_i,mem_n) = eval_exprps exprsp env mem in 
       match v with 
       | InP(body_proc,argz_string,env_proc) ->
         let env_proc' = add_variables_to_env (argz_string) (v_i) (env_proc) in 
-        let (mem',output') = eval_block (body_proc) (env_proc') (mem) (output) in 
+        let (mem',output') = eval_block (body_proc) (env_proc') (mem_n) (output) in 
         (mem',output')
       | InPR(body_proc,procName,argz_string,env_proc) ->
         let rec_proc_def = InPR  (body_proc,procName,argz_string,env_proc) in 
         let argz_string_proc_rec = procName::argz_string in 
         let v_i_proc_rec = rec_proc_def::v_i in 
         let env_proc' = add_variables_to_env (argz_string_proc_rec) (v_i_proc_rec) (env_proc) in 
-        let (mem',output') = eval_block (body_proc) (env_proc') (mem) (output) in 
+        let (mem',output') = eval_block (body_proc) (env_proc') (mem_n) (output) in 
         (mem',output')
       | _ -> failwith "Expected procedure but receieved other type"
     
@@ -424,7 +450,7 @@ let rec eval_stat s env mem output=
 and eval_def d env mem = 
   match d with 
   | ASTconst(idf,t,e)-> 
-    let v = eval_expr e env mem in 
+    let (v,mem') = eval_expr e env mem in 
     let bind = Binding (idf,v) in 
     let env' = (bind :: env) in 
     (env',mem)
