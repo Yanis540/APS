@@ -1,6 +1,6 @@
 [
     CONST x (vec int) (alloc 2);
     SET (nth x 1) (alloc 3);
-    SET (nth (nth x 3) 1) (alloc 3);
-    ECHO (nth x 1)
+    SET (nth (nth x 1) 2) 1;
+    ECHO (nth (nth x 1) 2)
 ]

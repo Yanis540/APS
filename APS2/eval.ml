@@ -462,10 +462,6 @@ and eval_lval (lv:lval) (env:environnement) (mem:memory) : (address*memory) =
       | ASTlval _ -> 
           let (a1,mem'') = eval_lval l env (mem') in 
           let v_a1 = get_address_value_from_memory (a1) (mem'') in 
-          Printf.printf "Address a1 : %s\n" (address_to_string (a1))  ; 
-          Printf.printf "Env : %s\n" (environnement_to_string (env))  ; 
-          Printf.printf "Memory : %s`\n" (memory_to_string (mem''))  ; 
-          Printf.printf "Value address : %s`\n" (value_to_string (v_a1))  ; 
           let (a2,_) = get_bloc_address (v_a1) in 
           let a2' = add_to_address (a2) (i) in 
           (a2',mem'')
