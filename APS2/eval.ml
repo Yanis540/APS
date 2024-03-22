@@ -51,19 +51,53 @@ let prim_to_string (p:prim) : string =
   | Not-> "Not"
 
 ;;
-
+let address_to_string (addr : address) : string =
+  match addr with
+  | InA(i) -> "Address: " ^ string_of_int i
+;;
 let value_to_string (v:value): string = 
   match v with 
   | InZ _ -> "Integer"
   | InF (_,_,_) -> "Function"
   | InFR (_,_,_,_) -> "Function"
   | InPrim p -> (prim_to_string p )
-  | InAddress _ -> "Address"
+  | InAddress a -> (address_to_string a) 
   | InP (_,_,_) -> "Procedure"
   | InPR (_,_,_,_) -> "Procedure"
   | None  -> "None"
   | InBloc (_)  -> "Bloc"
 ;;
+
+let rec memory_to_string (mem : memory) : string =
+  let memory_element_to_string (elem : memory_element) : string =
+    match elem with
+    | Memory(addr, value) ->
+      let addr_str = match addr with InA(i) -> string_of_int i in
+      let value_str = value_to_string value in
+      "(" ^ addr_str ^ ", " ^ value_str ^ ")"
+  in
+  match mem with
+  | [] -> "Memory is empty"
+  | hd :: tl ->
+    let hd_str = memory_element_to_string hd in
+    let tl_str = memory_to_string tl in
+    hd_str ^ "; " ^ tl_str
+;;
+let rec environnement_to_string (env : environnement) : string =
+  let binding_to_string (bind : binding) : string =
+    match bind with
+    | Binding(str, value) ->
+      let value_str = value_to_string value in
+      str ^ " -> " ^ value_str
+  in
+  match env with
+  | [] -> "Environnement is empty"
+  | hd :: tl ->
+    let hd_str = binding_to_string hd in
+    let tl_str = environnement_to_string tl in
+    hd_str ^ "; " ^ tl_str
+;;
+
 
 (*! Memory allocation *)
 let get_memory_address (a:address) = 
@@ -90,6 +124,12 @@ let rec get_address_value_from_memory (address: address) (mem:memory) : value   
       else
         get_address_value_from_memory address (mem') 
 ;;
+
+let add_to_address (a:address) (i:int) : address = 
+  let a_value =  get_memory_address (a) in 
+  let a' = InA(a_value + i) in
+  (a')
+;; 
 
 (* alloc(σ) = (a, σ′) *)
 let alloc (mem:memory) = 
@@ -187,8 +227,15 @@ let rec get_ident_value_from_env (ident  : string) (env : environnement)  : valu
 let get_int_value (v:value)=
   match v with 
   | InZ(n) -> n 
-  | _ -> failwith "Not an integer value" 
-
+  | _ -> failwith ("Expected integer value but received : "^(value_to_string v)) 
+;;
+let get_bloc_address (v:value) : (address*int)=
+  match v with 
+  | InBloc(b) -> 
+    let (a,n) = get_bloc_address_and_size(v) in
+    (a,n)
+  | _ -> failwith ("Expected bloc value but received : "^(value_to_string v)) 
+;;
 
 let get_bool_value (v:value):bool=
   match v with 
@@ -358,68 +405,73 @@ let rec eval_expr (e:expr) (env:environnement) (mem:memory) : (value)*(memory)=
     | v -> failwith ("Expected function but got "^ (value_to_string v))  
     )
   | ASTalloc (e) -> 
-    let (v,mem') = eval_expr (e) (env) (mem) in
-    (
-      match v with 
-      | InZ(n) -> 
-          let (a,mem'') = allocn (mem') (n) in
-          let bloc = InB(a,n) in 
-          let v' = InBloc(bloc) in 
-          (v',mem'')
-      | _ -> failwith ("Expected function but got "^ (value_to_string v)) 
-    ) 
+      let (v,mem') = eval_expr (e) (env) (mem) in
+      let n = get_int_value(v) in 
+      let (a,mem'') = allocn (mem') (n) in
+      let bloc = InB(a,n) in 
+      let v' = InBloc(bloc) in 
+      (v',mem'')
   | ASTlen (e) -> 
     let (v,mem') = eval_expr (e) (env) (mem) in
-    (
-      match v with 
-      | InBloc(b) -> 
-          let (a,n) = get_bloc_address_and_size(v) in
-          let inzN = InZ(n) in  
-          (inzN,mem')
-      | _ -> failwith ("Expected bloc but got "^ (value_to_string v)) 
-    ) 
+    let (a,n) = get_bloc_address(v) in 
+    (InZ(n),mem')
+   
   | ASTnth (e1, e2) -> 
-    let (v1, mem') = eval_expr e1 env mem in
-    let (v2, mem'') = eval_expr e2 env mem' in
-    (match v1 with 
-    | InBloc(b) -> 
-        (match v2 with 
-        | InZ(i) -> 
-            let (a, n) = get_bloc_address_and_size v1 in
-            if (i < 0 || i >= n) then failwith "Index out of bound" 
-            else 
-              let a_value =  get_memory_address (a) in 
-              let a' = InA(a_value + i) in 
-              let nth_value = get_address_value_from_memory (a') (mem'') in
-              (nth_value, mem'')
-        | _ -> failwith ("Nth Expects integer value but got " ^ (value_to_string v2))) 
-    | _ -> failwith ("Expected bloc but got " ^ (value_to_string v1)))
+      let (v1, mem') = eval_expr e1 env mem in
+      let (v2, mem'') = eval_expr e2 env mem' in
+      let (a,n) =  get_bloc_address (v1) in 
+      let i = get_int_value(v2) in 
+      if (i < 0 || i >= n) then failwith "Index out of bound" 
+      else 
+        let a' = add_to_address (a) (i) in 
+        let nth_value = get_address_value_from_memory (a') (mem'') in
+        (nth_value, mem'')
     
   | ASTvset (e1, e2,e3) -> 
     let (v1, mem') = eval_expr e1 env mem in
     let (v2, mem'') = eval_expr e2 env mem' in
     let (v, mem''') = eval_expr e3 env mem'' in
-    (match v1 with 
-    | InBloc(b) -> 
-        (match v2 with 
-        | InZ(i) -> 
-            let (a, n) = get_bloc_address_and_size v1 in
-            if (i < 0 || i >= n) then failwith "Vset Index out of bound" 
-            else 
-              let a_value =  get_memory_address (a) in 
-              let a' = InA(a_value + i) in 
-              let (_,mem'''')= update_address_value (mem''') (a') (v) in 
-              (v1, mem'''')
-        | _ -> failwith ("Vset Expects integer value but got " ^ (value_to_string v2))) 
-    | _ -> failwith ("Expected bloc but got " ^ (value_to_string v1)))
+    let (a,n) = get_bloc_address(v1) in 
+    let i = get_int_value (v2) in 
+    if (i < 0 || i >= n) then failwith "Vset Index out of bound" 
+    else 
+      let a_value =  get_memory_address (a) in 
+      let a' = InA(a_value + i) in 
+      let (_,mem'''')= update_address_value (mem''') (a') (v) in 
+      (v1, mem'''')
     
 
-
-
+and eval_lval (lv:lval) (env:environnement) (mem:memory) : (address*memory) = 
+  match lv with 
+  | ASTlvalId varName -> 
+      let value_address = get_ident_value_from_env (varName) (env) in 
+      (match value_address with 
+      | InAddress address -> (address,mem)
+      | _ -> failwith ("Exepected Identifier or address but receievd :  "^ (value_to_string value_address))
+      )  
     
-
-  
-
+  | ASTlval (l,e) -> 
+      let (v_index,mem') = eval_expr e (env) (mem) in 
+      let i = get_int_value (v_index) in
+      (match l with 
+      | ASTlvalId x ->
+         let v = get_ident_value_from_env (x) (env) in 
+         let (a,n) = get_bloc_address (v) in 
+         let a' = add_to_address (a) (i) in 
+         (a',mem')
+      | ASTlval _ -> 
+          let (a1,mem'') = eval_lval l env (mem') in 
+          let v_a1 = get_address_value_from_memory (a1) (mem'') in 
+          Printf.printf "Address a1 : %s\n" (address_to_string (a1))  ; 
+          Printf.printf "Env : %s\n" (environnement_to_string (env))  ; 
+          Printf.printf "Memory : %s`\n" (memory_to_string (mem''))  ; 
+          Printf.printf "Value address : %s`\n" (value_to_string (v_a1))  ; 
+          let (a2,_) = get_bloc_address (v_a1) in 
+          let a2' = add_to_address (a2) (i) in 
+          (a2',mem'')
+      )
+      
+     
 
 and eval_exprs (es:expr list) (env:environnement) (mem:memory) : (value list * memory)  = 
   match es with  
@@ -463,18 +515,10 @@ let rec eval_stat s env mem output=
       let (v,mem')= eval_expr e env mem in 
       (mem',v::output)
   | ASTset (l,e)-> 
-      (
-        match l with 
-        | ASTlvalId varName -> 
-          let value_address = get_ident_value_from_env (varName) (env) in 
-          (* récupérer l'address  *)
-          let address = get_memory_address_from_value(value_address) in 
-          let (new_value,mem') = eval_expr e env mem  in 
-          let (old_value, mem'') = update_address_value (mem') (address) (new_value) in 
-          (mem'',output)
-        (*! TODO *)
-        | ASTlval (lval,pos)-> failwith "TODO"
-      )
+      let (v,mem') = eval_expr (e) (env) (mem) in 
+      let (a,mem'') = eval_lval (l) (env) (mem') in 
+      let (_,mem''') = update_address_value (mem'') (a) (v) in 
+      (mem''',output)
     
   | ASTif (cond,b_cons,b_alt)-> 
       let (cond_value,mem') = eval_expr cond env mem in 
