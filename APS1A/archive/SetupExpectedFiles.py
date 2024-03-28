@@ -4,8 +4,9 @@ EXPECTED_RESULTS_DIR = './expected'
 RESULTS_DIR = './results'
 SAMPLES_DIR = './Samples'
 SUB_DIRS =['cmds','defs','exprs','prim','stat']
+
 def initial_setup():
-    source_dir = "../APS0/expected"
+    source_dir = "../APS1/expected"
     destination_dir = EXPECTED_RESULTS_DIR
     shutil.copytree(source_dir, destination_dir)
 
