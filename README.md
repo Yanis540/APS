@@ -22,29 +22,29 @@ APS0
 ├───expected
 │   ├───defs
 │   │   ├───const_1
-│   │   ├──────eval.result
-│   │   ├──────type.result
-│   │   ├───...
+│   │   │   ├───eval.result
+│   │   │   └───type.result
+│   │   └───...
 │   ├───exprs
 │   │   ├───abs_1
-│   │   ├───...
+│   │   └───...
 │   └───...
 ├───results
 │   ├───defs
 │   │   ├───const_1
-│   │   ├──────eval.result
-│   │   ├──────type.result
-│   │   ├───...
+│   │   │   ├───eval.result
+│   │   │   └───type.result
+│   │   └───...
 │   ├───exprs
 │   │   ├───abs_1
-│   │   ├───...
+│   │   └───...
 │   ├───...
 │   │
 │   └───results.csv
 ├───Samples
 │   ├───archive
-│   ├───defs
-│   └──────const_1.aps
+│   └───defs
+│       └──────const_1.aps
 ├───Setup.ipynb
 ├───type.sh
 └───test.sh
