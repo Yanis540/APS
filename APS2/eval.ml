@@ -574,6 +574,7 @@ and eval_def d env mem =
     let env' = (bind :: env) in 
     (env',mem)
   | ASTvar(name,t)-> 
+    (* Fait exprès, par exemple on peut sauvegarder les tableaux dans des variables (ce qui est le cas dans plusieurs langage ) *)
     let (address,mem') = init_mem_value (None) (mem) in 
     let bind = Binding(name,address) in
     let env' = (bind :: env) in  
